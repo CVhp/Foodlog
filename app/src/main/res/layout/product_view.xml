@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    app:cardCornerRadius="2dp"
+    app:cardElevation="0dp"
+    android:layout_margin="1dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/lyt_parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/lyt_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/product_imageview"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"/>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/product_name_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:text="People Name"
+                    android:textSize="15sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/product_date_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginRight="50dp"
+                    android:layout_marginBottom="5dp"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textSize="12sp"
+                    android:text="yyyy-mm-dd" />
+                >
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/stock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="86dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:text="10"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/product_unite_textView"
+                android:text="grammes"
+                android:textSize="16sp"
+                android:layout_marginRight="10dp"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                />
+<!--            <CheckBox-->
+<!--                android:id="@+id/checkBox"-->
+<!--                android:visibility="gone"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_alignParentEnd="true"-->
+<!--                android:layout_below="@id/stock"-->
+<!--                />-->
+
+        </RelativeLayout>
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
+
+
+
+    <!--<?xml version="1.0" encoding="utf-8"?>-->
+    <!--<androidx.cardview.widget.CardView-->
+    <!--    xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--    xmlns:tools="http://schemas.android.com/tools"-->
+    <!--    android:layout_margin="8dp"-->
+    <!--    android:layout_width="match_parent"-->
+    <!--    android:layout_height="wrap_content">-->
+
+    <!--    <RelativeLayout-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--        android:id="@+id/product_layout"-->
+    <!--        android:padding="8dp">-->
+    <!--        <ImageView-->
+    <!--            android:layout_margin="8dp"-->
+    <!--            android:id="@+id/product_imageview"-->
+    <!--            android:layout_width="50dp"-->
+    <!--            android:layout_height="50dp"/>-->
+    <!--        <TextView-->
+    <!--            tools:text="toto titi"-->
+    <!--            android:textStyle="bold"-->
+    <!--            android:textSize="18sp"-->
+    <!--            android:id="@+id/product_name_textview"-->
+    <!--            android:layout_toEndOf="@id/product_imageview"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"/>-->
+    <!--        <TextView-->
+    <!--            android:id="@+id/product_date_textview"-->
+    <!--            android:text="yyyy-mm-dd"-->
+    <!--            android:layout_toEndOf="@id/product_imageview"-->
+    <!--            android:layout_below="@id/product_name_textview"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"/>-->
+    <!--    </RelativeLayout>-->
+
+    <!--</androidx.cardview.widget.CardView>-->
