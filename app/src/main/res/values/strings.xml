@@ -46,4 +46,13 @@
     <string name="password2_inscription">Mot de passe</string>
     <string name="quantite">Quantité</string>
     <string name="unite">Unité</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="don_t_have_account_register_now">Don\'t have an account ?</string>
+    <string name="just_register">Just register</string>
+    <string name="name">Name</string>
+    <string name="register">Register</string>
+    <string name="already_member">Already member ?</string>
+    <string name="just_login">Just login</string>
 </resources>

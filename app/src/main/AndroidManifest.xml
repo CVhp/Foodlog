@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="fr.epf.foodlog">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name=".ClientApp"
@@ -12,23 +12,23 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-       <activity
+        <activity
             android:name=".LoadingActivities.LoadingActivity"
             android:theme="@style/AppTheme2">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoadingActivities.SignInActivity"></activity>
-        <activity android:name=".LoadingActivities.SignUpActivity"></activity>
+        <activity android:name=".LoadingActivities.SignInActivity" />
+        <activity android:name=".LoadingActivities.SignUpActivity" />
         <activity
             android:name=".WelcomeScreenActivity"
-            android:theme="@style/AppTheme2">
-        </activity>
-        <activity android:name=".ListProduct.ListProductActivity"></activity>
-        <activity android:name=".Options.AddProductActivity"></activity>
-        <activity android:name=".Options.DetailsProductActivity"></activity>
+            android:theme="@style/AppTheme2"></activity>
+        <activity android:name=".ListProduct.ListProductActivity" />
+        <activity android:name=".Options.AddProductActivity" />
+        <activity android:name=".Options.DetailsProductActivity" />
     </application>
 
 </manifest>
