@@ -9,7 +9,7 @@ import retrofit2.http.POST
 interface ClientAPI {
 
     @FormUrlEncoded
-    @POST("register.php")
+    @POST("user/register.php")
     fun registerUser(
         @Field("name") name: String,
         @Field("email") email: String,
@@ -18,14 +18,14 @@ interface ClientAPI {
 
 
     @FormUrlEncoded
-    @POST("login.php")
+    @POST("user/login.php")
     fun loginUser(
         @Field("email") email: String,
         @Field("password") password: String
     ): Call<ClientAuth>
 
     @FormUrlEncoded
-    @POST("login.php")
+    @POST("user/login.php")
     fun loginUserWithToken(
         @Field("token") token: String
     ): Call<ClientAuth>
