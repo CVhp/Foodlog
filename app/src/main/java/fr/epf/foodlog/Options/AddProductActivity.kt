@@ -2,6 +2,7 @@ package fr.epf.foodlog.Options
 
 import android.app.AlertDialog
 import android.app.DatePickerDialog
+import android.content.Context
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -98,12 +99,10 @@ class AddProductActivity : AppCompatActivity() {
 
                 override fun onStartTrackingTouch(seekBar: SeekBar) {
                     // Do something
-                    Toast.makeText(applicationContext,"start tracking",Toast.LENGTH_SHORT).show()
                 }
 
                 override fun onStopTrackingTouch(seekBar: SeekBar) {
                     // Do something
-                    Toast.makeText(applicationContext,"stop tracking",Toast.LENGTH_SHORT).show()
                 }
             })
 
@@ -180,8 +179,13 @@ class AddProductActivity : AppCompatActivity() {
 
     private fun getServer(name : String, type : String, date : String, stock:String, unite:Int, id_client : String){
         val service  = retrofit().create(ProductService::class.java)
+        val pref = applicationContext.getSharedPreferences(
+            "Foodlog",
+            Context.MODE_PRIVATE
+        )
+        val token = pref.getString("token", null);
         runBlocking {
-            val result = service.postProduct("${name}", "${type}", "${date}", "${id_client}","${stock}",unite)
+            val result = service.postProduct("${token}", "${name}", "${type}","${date}", "${stock}", "$unite")
         }
     }
 

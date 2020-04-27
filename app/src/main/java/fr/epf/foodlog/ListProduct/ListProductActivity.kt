@@ -1,15 +1,20 @@
 package fr.epf.foodlog.ListProduct
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import androidx.annotation.RequiresApi
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
+import fr.epf.foodlog.LoadingActivities.LoadingActivity
 import fr.epf.foodlog.Options.AddProductActivity
 import fr.epf.foodlog.R
 import fr.epf.foodlog.data.AppDataBase
@@ -81,12 +86,17 @@ class ListProductActivity : AppCompatActivity() {
 
 
         runBlocking {
-            val result = service.getProducts("2")
-            result.results.map {
-                val id = it.ID_product
-                val name = it.Name
-                val type = it.Type
-                val date = it.Date
+            val pref = applicationContext.getSharedPreferences(
+                "Foodlog",
+                Context.MODE_PRIVATE
+            )
+            val token = pref.getString("token", null);
+            val result = service.getProducts("$token")
+            result.products.map {
+                val id = it.id
+                val name = it.name
+                val type = it.type
+                val date = it.date
                 val stock = it.stock
                 val unite = it.unite
 
@@ -116,7 +126,7 @@ class ListProductActivity : AppCompatActivity() {
                 val product = Product(id, name, typeCategory, LocalDate.parse(date),stock.toDouble(),typeUnite)
 
                 runBlocking {
-                    productDao.addProduct(product)//référence aux coroutines Kotlin
+                    productDao.addProduct(product)
                 }
 
                 Log.d("Produit: ", "$name $type $date")
@@ -125,6 +135,28 @@ class ListProductActivity : AppCompatActivity() {
         }
 
     }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.list_clients,menu)
+        return true
+    }
+
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean =
+
+        when(item.itemId){
+            R.id.action_logout -> {
+
+                val pref = applicationContext.getSharedPreferences("Foodlog",Context.MODE_PRIVATE)
+                val editor: SharedPreferences.Editor = pref.edit()
+                editor.clear()
+                editor.apply()
+                val intent = Intent(this, LoadingActivity::class.java)
+                startActivity(intent)
+                true
+            }
+            else -> true
+        }
 
 }
 
