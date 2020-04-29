@@ -1,0 +1,14 @@
+package fr.epf.foodlog.Common
+
+import fr.epf.foodlog.barecode.OpenFoodFactsAPI
+import fr.epf.foodlogsprint.remote.ClientAPI
+import fr.epf.foodlog.Remote.RetrofitClient
+
+object CommonOFF {
+
+    val BASE_URL = "https://world.openfoodfacts.org/api/v0/"
+
+    val api: OpenFoodFactsAPI
+        get() = RetrofitClient.getClient(BASE_URL).create(OpenFoodFactsAPI::class.java)
+
+}

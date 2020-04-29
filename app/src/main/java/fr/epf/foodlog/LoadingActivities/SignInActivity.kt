@@ -54,6 +54,7 @@ class SignInActivity : AppCompatActivity() {
 
         mService.loginUser(email, password)
             .enqueue(object : Callback<ClientAuth> {
+
                 override fun onFailure(call: Call<ClientAuth>?, t: Throwable?) {
                     Toast.makeText(this@SignInActivity, t!!.message, Toast.LENGTH_SHORT).show()
                 }

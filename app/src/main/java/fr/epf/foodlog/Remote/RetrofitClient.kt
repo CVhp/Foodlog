@@ -1,4 +1,4 @@
-package fr.epf.foodlogsprint1.remote
+package fr.epf.foodlog.Remote
 
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -6,12 +6,11 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 object RetrofitClient {
     private var retrofit: Retrofit?=null
     fun getClient(baseUrl:String): Retrofit {
-        if(retrofit==null){
-            retrofit= Retrofit.Builder()
+        if(retrofit ==null){
+            retrofit = Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .addConverterFactory(MoshiConverterFactory.create())
                 .build()
-
         }
         return retrofit!!
     }

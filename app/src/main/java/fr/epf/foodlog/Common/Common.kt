@@ -1,7 +1,7 @@
 package fr.epf.foodlog.Common
 
 import fr.epf.foodlogsprint.remote.ClientAPI
-import fr.epf.foodlogsprint1.remote.RetrofitClient
+import fr.epf.foodlog.Remote.RetrofitClient
 
 object Common {
     val BASE_URL = "https://foodlog.min.epf.fr/api/"
