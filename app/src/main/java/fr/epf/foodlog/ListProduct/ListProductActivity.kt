@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import androidx.annotation.RequiresApi
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,18 +16,15 @@ import androidx.room.Room
 import fr.epf.foodlog.LoadingActivities.LoadingActivity
 import fr.epf.foodlog.Options.AddProductActivity
 import fr.epf.foodlog.R
+import fr.epf.foodlog.barecode.BarrecodeActivity
 import fr.epf.foodlog.data.AppDataBase
-import fr.epf.foodlog.data.ClientDao
 import fr.epf.foodlog.data.ProductDao
 import fr.epf.foodlog.model.CategoryProduct
-import fr.epf.foodlog.model.Client
 import fr.epf.foodlog.model.Product
 import fr.epf.foodlog.model.UnityProduct
 import fr.epf.foodlog.service.ProductService
 import fr.epf.foodlog.service.retrofit
 import kotlinx.android.synthetic.main.activity_list_product.*
-import kotlinx.android.synthetic.main.product_view.*
-import kotlinx.android.synthetic.main.product_view.view.*
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 
@@ -75,11 +71,12 @@ class ListProductActivity : AppCompatActivity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun getServer(){
-        val service  = retrofit().create(ProductService::class.java)
-        val database: AppDataBase = Room.databaseBuilder(this, AppDataBase::class.java, "gestionclients")
-            .build()
-        val productDao : ProductDao = database.getProductDao()
+    private fun getServer() {
+        val service = retrofit().create(ProductService::class.java)
+        val database: AppDataBase =
+            Room.databaseBuilder(this, AppDataBase::class.java, "gestionclients")
+                .build()
+        val productDao: ProductDao = database.getProductDao()
         runBlocking {
             productDao.deleteProducts() //permet de clear la base de donnée interne products
         }
@@ -100,8 +97,8 @@ class ListProductActivity : AppCompatActivity() {
                 val stock = it.stock
                 val unite = it.unite
 
-                var typeCategory : CategoryProduct = CategoryProduct.FRUIT
-                when(type){
+                var typeCategory: CategoryProduct = CategoryProduct.FRUIT
+                when (type) {
                     "2" -> typeCategory = CategoryProduct.LEGUME
                     "1" -> typeCategory = CategoryProduct.FRUIT
                     "3" -> typeCategory = CategoryProduct.CEREALE
@@ -113,17 +110,33 @@ class ListProductActivity : AppCompatActivity() {
                     "9" -> typeCategory = CategoryProduct.BOISSON
                 }
 
-                var typeUnite : UnityProduct = UnityProduct.Gramme
-                when(unite){
+                var typeUnite: UnityProduct = UnityProduct.Gramme
+                when (unite) {
                     1 -> typeUnite = UnityProduct.Gramme
                     2 -> typeUnite = UnityProduct.Portion
                 }
 
-                Product.all.add(Product(id, name, typeCategory, LocalDate.parse(date),stock.toDouble(),typeUnite))
+                Product.all.add(
+                    Product(
+                        id,
+                        name,
+                        typeCategory,
+                        LocalDate.parse(date),
+                        stock.toDouble(),
+                        typeUnite
+                    )
+                )
 
                 //put into intern BDD
 
-                val product = Product(id, name, typeCategory, LocalDate.parse(date),stock.toDouble(),typeUnite)
+                val product = Product(
+                    id,
+                    name,
+                    typeCategory,
+                    LocalDate.parse(date),
+                    stock.toDouble(),
+                    typeUnite
+                )
 
                 runBlocking {
                     productDao.addProduct(product)
@@ -137,17 +150,16 @@ class ListProductActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.list_clients,menu)
+        menuInflater.inflate(R.menu.list_clients, menu)
         return true
     }
 
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean =
 
-        when(item.itemId){
+        when (item.itemId) {
             R.id.action_logout -> {
-
-                val pref = applicationContext.getSharedPreferences("Foodlog",Context.MODE_PRIVATE)
+                val pref = applicationContext.getSharedPreferences("Foodlog", Context.MODE_PRIVATE)
                 val editor: SharedPreferences.Editor = pref.edit()
                 editor.clear()
                 editor.apply()
@@ -155,7 +167,14 @@ class ListProductActivity : AppCompatActivity() {
                 startActivity(intent)
                 true
             }
-            else -> true
+            R.id.action_AddProduct -> {
+
+                val intent=Intent(this,
+                    BarrecodeActivity::class.java)
+                startActivity(intent)
+                true
+            }
+            else ->true
         }
 
 }

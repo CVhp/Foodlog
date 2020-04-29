@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".barecode.BarrecodeMainActivity"
+    android:padding="0dp"    >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Scanned Value: "
+        android:id="@+id/txtValueLabel"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="{{please scan first}}"
+        android:id="@+id/txtValue"
+        app:layout_constraintLeft_toRightOf="@id/txtValueLabel"
+        />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnScan"
+        android:text="Scan"
+        app:layout_constraintTop_toBottomOf="@id/txtValueLabel"
+        />
+
+</LinearLayout>

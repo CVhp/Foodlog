@@ -7,4 +7,9 @@
         android:icon="@drawable/mr_dialog_close_dark"
         android:title="Logout"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_AddProduct"
+        android:icon="@android:drawable/ic_input_add"
+        android:title="AddProduct"
+        app:showAsAction="ifRoom"/>
 </menu>
