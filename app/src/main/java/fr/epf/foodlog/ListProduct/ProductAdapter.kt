@@ -66,7 +66,7 @@ class ProductAdapter(val products: List<Product>) : RecyclerView.Adapter<Product
         val d=LocalDate.parse(currentDate)
         val limitDa = d.plusDays(2)
 
-        if(product.date.isBefore(limitDa) && product.date.isAfter(d)  || product.date.isEqual(limitDa)){
+        if(product.date.isBefore(limitDa) && product.date.isAfter(d)  || product.date.isEqual(d) || product.date.isEqual(limitDa)){
             holder.productView.product_date_textview.setTextColor(Color.RED)
         }
         if(product.date.isBefore(d)){
