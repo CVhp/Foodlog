@@ -14,8 +14,14 @@ interface ProductService {
                             @Query("unite") unite: String
     )
 
-    @GET("/test_interface/updateProduct.php")
-    suspend fun updateProduct(@Query("Name") Name : String,
+    @POST ("/api/product/postUri.php")
+    suspend fun postUri(@Query("token") token: String,
+                        @Query("ID_product") ID_product : Int,
+                        @Query("uri_image") uri_image: String)
+
+    @GET("/api/product/updateProduct.php")
+    suspend fun updateProduct(@Query("token") token: String,
+                              @Query("Name") Name : String,
                               @Query("Type") Type : String,
                               @Query("Date") Date : String,
                               @Query("stock") stock : String,
@@ -28,4 +34,4 @@ interface ProductService {
 
 data class GetProductResults(val products: List<Product> = emptyList())
 
-data class Product(val id : Int, val name: String = "", val type : String = "", val date: String = "", val id_client: String = "", val stock: String="", val unite: Int)
+data class Product(val id : Int, val name: String = "", val type : String = "", val date: String = "", val id_client: String = "", val stock: String="", val unite: Int, val uri : String?="")

@@ -1,8 +1,12 @@
 package fr.epf.foodlog.Options
 
+import android.app.Activity
 import android.app.DatePickerDialog
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
@@ -15,6 +19,7 @@ import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.room.Room
 import fr.epf.foodlog.R
 import fr.epf.foodlog.model.Product
 import fr.epf.foodlog.model.UnityProduct
@@ -29,6 +34,12 @@ import java.util.*
 
 class DetailsProductActivity() : AppCompatActivity(){
 
+    companion object{
+        private val CLICK_ON_IMAGE = 100
+        private val IMAGE_PICK_CODE = 101
+        private val PERMISSION_CODE = 102
+    }
+
     private var productLastName : String? = null
     private var id : Int = 0
     private var mDateSetListener: DatePickerDialog.OnDateSetListener? = null
@@ -39,8 +50,16 @@ class DetailsProductActivity() : AppCompatActivity(){
         setContentView(R.layout.activity_details_product)
 
         this.product_imageView_details.setOnClickListener {
-            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            startActivityForResult(intent, 100)
+            if(checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) ==
+                PackageManager.PERMISSION_DENIED){
+                val permissions = arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE);
+                requestPermissions(permissions, PERMISSION_CODE);
+            }
+            else {
+                pickImageFromGallery()
+            }
+            /*val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            startActivityForResult(intent, CLICK_ON_IMAGE)*/
         }
 
         id = intent.getIntExtra("id", 0)
@@ -56,7 +75,7 @@ class DetailsProductActivity() : AppCompatActivity(){
 
         var RecUnite = intent.getStringExtra("unite")
         var unite: String
-        var NumUnite : Int = 0
+        var NumUnite = 0
 
         if(RecUnite=="Gramme"){
             unite="grammes"
@@ -66,16 +85,29 @@ class DetailsProductActivity() : AppCompatActivity(){
 
         details_unite.text= unite
 
-        product_imageView_details.setImageResource(
-            when(clientSexe){
-                "VIANDE" -> R.drawable.viande
-                "LEGUME" -> R.drawable.aubergine
-                "FRUIT" -> R.drawable.pomme
-                "POISSON" -> R.drawable.poisson
-                "CEREALE" -> R.drawable.cereale
-                else -> R.drawable.banane
-            }
-        )
+
+
+        var uri = intent.getStringExtra("uri")
+        if (uri == "null"){
+            product_imageView_details.setImageResource(
+                when(clientSexe){
+                    "FRUIT" -> R.drawable.pomme
+                    "LEGUME" -> R.drawable.aubergine
+                    "CEREALE" -> R.drawable.cereale
+                    "LAITIER" -> R.drawable.banane
+                    "SALE" -> R.drawable.pomme
+                    "SUCRE" -> R.drawable.sucre
+                    "VIANDE" -> R.drawable.viande
+                    "POISSON" -> R.drawable.poisson
+                    "BOISSON" -> R.drawable.boisson
+                    else -> R.drawable.banane
+                }
+            )
+        } else {
+            product_imageView_details.setImageURI(Uri.parse(uri))
+        }
+
+
         /*if (clientSexe == "VIANDE"){
             product_imageView_details.setImageResource(R.drawable.viande)
         }*/
@@ -305,9 +337,14 @@ class DetailsProductActivity() : AppCompatActivity(){
 
     private fun getServer(name : String, type : String, date : String, stock:String, unite:Int, id_client : String){
         val service  = retrofit().create(ProductService::class.java)
+        val pref = applicationContext.getSharedPreferences(
+            "Foodlog",
+            Context.MODE_PRIVATE
+        )
+        val token = pref.getString("token", null);
         Log.d("concurence", "${name} ${type} ${date} $id "  )
         runBlocking {
-            val result = service.updateProduct("${name}","${type}","${date}","${stock}", unite, id)
+            val result = service.updateProduct("${token}","${name}","${type}","${date}","${stock}", unite, id)
         }
     }
 
@@ -340,10 +377,64 @@ class DetailsProductActivity() : AppCompatActivity(){
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 100) {
-            val bitmap = data?.getParcelableExtra("data") as? Bitmap //= if data est null on créée bitmap
+        /*if (requestCode == CLICK_ON_IMAGE) {
+            /*val bitmap = data?.getParcelableExtra("data") as? Bitmap //= if data est null on créée bitmap
             Log.d("EPF", "image")
-            product_imageView_details.setImageBitmap(bitmap)
+            product_imageView_details.setImageBitmap(bitmap)*/
+            pickImageFromGallery()
+        }*/
+        if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE){
+            val uriPicture = data?.data
+            if (uriPicture != null){
+                product_imageView_details.setImageURI(uriPicture)
+                Log.d("test", "${uriPicture}")
+                addUriDataBase(uriPicture)
+            }
+        }
+    }
+
+    private fun pickImageFromGallery() {
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = "image/*"
+        startActivityForResult(intent, IMAGE_PICK_CODE)
+    }
+
+    private fun addUriDataBase(uriPicture : Uri?) {
+        /*
+        //intern database
+        val picture = Photo(0, uriPicture.toString())
+        val database : AppDataBase = Room.databaseBuilder(this, AppDataBase::class.java, "gestionPictures").build()
+        val pictureDao : PhotoDao = database.getPhotoDao()
+        runBlocking {
+            pictureDao.addPicture(picture)
+        }*/
+
+        //server database
+        val service = retrofit().create(ProductService::class.java)
+        val pref = applicationContext.getSharedPreferences(
+            "Foodlog",
+            Context.MODE_PRIVATE
+        )
+        val token = pref.getString("token", null);
+        runBlocking {
+            val result = service.postUri("${token}", 25,"${uriPicture}")
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        when(requestCode){
+            PERMISSION_CODE -> {
+                if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    pickImageFromGallery()
+                }
+                else {
+                    Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 

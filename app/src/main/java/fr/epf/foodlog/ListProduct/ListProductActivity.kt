@@ -99,6 +99,7 @@ class ListProductActivity : AppCompatActivity() {
                 val date = it.date
                 val stock = it.stock
                 val unite = it.unite
+                var uri = it.uri
 
                 var typeCategory : CategoryProduct = CategoryProduct.FRUIT
                 when(type){
@@ -119,11 +120,16 @@ class ListProductActivity : AppCompatActivity() {
                     2 -> typeUnite = UnityProduct.Portion
                 }
 
-                Product.all.add(Product(id, name, typeCategory, LocalDate.parse(date),stock.toDouble(),typeUnite))
+                if (uri == null){
+                    uri = "null"
+                }
+
+
+                Product.all.add(Product(id, name, typeCategory, LocalDate.parse(date),stock.toDouble(),typeUnite, uri))
 
                 //put into intern BDD
 
-                val product = Product(id, name, typeCategory, LocalDate.parse(date),stock.toDouble(),typeUnite)
+                val product = Product(id, name, typeCategory, LocalDate.parse(date),stock.toDouble(),typeUnite, uri)
 
                 runBlocking {
                     productDao.addProduct(product)
