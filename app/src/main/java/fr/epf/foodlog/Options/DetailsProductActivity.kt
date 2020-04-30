@@ -417,7 +417,7 @@ class DetailsProductActivity() : AppCompatActivity(){
         )
         val token = pref.getString("token", null);
         runBlocking {
-            val result = service.postUri("${token}", 25,"${uriPicture}")
+            val result = service.postUri("${token}", id,"${uriPicture}")
         }
     }
 
