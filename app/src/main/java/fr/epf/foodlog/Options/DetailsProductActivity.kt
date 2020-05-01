@@ -304,7 +304,7 @@ class DetailsProductActivity() : AppCompatActivity(){
     }
 
     private fun getServer(name : String, type : String, date : String, stock:String, unite:Int, id_client : String){
-        val service  = retrofit().create(ProductService::class.java)
+        val service  = retrofit("https://foodlog.min.epf.fr/").create(ProductService::class.java)
         Log.d("concurence", "${name} ${type} ${date} $id "  )
         runBlocking {
             val result = service.updateProduct("${name}","${type}","${date}","${stock}", unite, id)

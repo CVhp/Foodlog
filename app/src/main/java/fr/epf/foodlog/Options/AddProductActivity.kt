@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
@@ -51,7 +52,7 @@ class AddProductActivity : AppCompatActivity() {
                 android.R.layout.simple_spinner_item, levels)
             spinner.adapter = adapter
             spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
 
                 }
 
@@ -198,7 +199,7 @@ class AddProductActivity : AppCompatActivity() {
     }
 
     private fun getServer(name : String, type : String, date : String, stock:String, unite:Int, id_client : String){
-        val service  = retrofit().create(ProductService::class.java)
+        val service  = retrofit("https://foodlog.min.epf.fr/").create(ProductService::class.java)
         val pref = applicationContext.getSharedPreferences(
             "Foodlog",
             Context.MODE_PRIVATE
@@ -209,40 +210,61 @@ class AddProductActivity : AppCompatActivity() {
         }
     }
 
+    private fun callOFFTest(id: String){
+        val service  = retrofit("https://world.openfoodfacts.org/").create(OpenFoodFactsAPI::class.java)
+
+        runBlocking {
+            val result = service.loadAPIResponse(id)
+            Log.d("resultAPI", "${result.product.product_name}")
+            lastname_edittext.setText(result.product.product_name)
+            Add_enterQuantite.setText(result.product.quantity)
+            Log.d("resultAPI", "${result.product.quantity}")
+
+        }
+    }
+
+
+    /*
     private fun callOFF(id: String){
+        Log.d("testcodebarre", "${id}")
 
-        runBlocking { mService.loadAPIResponse(id).enqueue(object: Callback<APIResponse> {
-            override fun onFailure(call: Call<APIResponse>, t: Throwable) {
-                Toast.makeText(
-                    this@AddProductActivity,
-                    "An error occured",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+        runBlocking {
+            val call = mService.loadAPIResponse(id)
+            Log.d("response", "${call}")
+            call.enqueue(object: Callback<APIResponse> {
+                override fun onFailure(call: Call<APIResponse>?, t: Throwable?) {
+                    Toast.makeText(
+                        this@AddProductActivity,
+                        "An error occured",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
 
-            override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
+                override fun onResponse(call: Call<APIResponse>?, response: Response<APIResponse>) {
+                    val name:String
+                    val quantity:String
 
-                val name:String
-                val quantity:String
+                    var  a= response.body()?.getStatus()
+                    Log.d("responsebody", "${a}")
 
-                    val  a=response.body()
-                    if(a!!.getStatus().is != 0){
-                        Toast.makeText(
-                            this@AddProductActivity,
-                            a.getStatus().toString(),
-                            Toast.LENGTH_SHORT
-                        ).show()
+                    if (a != null) {
+                        if(a.getStatus() != 0){
+                            Toast.makeText(
+                                this@AddProductActivity,
+                                a.getStatus().toString(),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
 
 
+                if (a != null) {
                     if(a.getProduct() != null) {
 
                         val product = a.getProduct()
 
                         if (!product!!.getProductName().isNullOrEmpty()) {
-
-                             name = product.getProductName().toString()
-
+                            name = product.getProductName().toString()
                             lastname_edittext.setText(name)
                         }else{
                             Toast.makeText(
@@ -252,21 +274,17 @@ class AddProductActivity : AppCompatActivity() {
                             ).show()
                         }
 
-
                         if (!product.getQuantity().isNullOrEmpty()) {
-
-                                quantity=product.getQuantity()!!.filter { it.isDigit() }
-
+                            quantity=product.getQuantity()!!.filter { it.isDigit() }
                             Add_enterQuantite.setText(quantity)
                         }else{
-                                Toast.makeText(
-                                    this@AddProductActivity,
-                                    "Quantity not found",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                    }
-                    else{
+                            Toast.makeText(
+                                this@AddProductActivity,
+                                "Quantity not found",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    } else{
                         Toast.makeText(
                             this@AddProductActivity,
                             "Product not found", //Insert Product in database
@@ -274,10 +292,12 @@ class AddProductActivity : AppCompatActivity() {
                         ).show()
 
                     }
+                }
             }
 
         }) }
-    }
+    }*/
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
         val result: IntentResult? = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
@@ -287,7 +307,8 @@ class AddProductActivity : AppCompatActivity() {
             if(result.contents != null){
                 scannedResult = result.contents
                 val ids=scannedResult
-                callOFF(ids)
+                //callOFF(ids)
+                callOFFTest(ids)
             } else {
                 Toast.makeText(
                     this@AddProductActivity,

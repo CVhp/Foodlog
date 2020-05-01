@@ -45,7 +45,7 @@ class BarrecodeMainActivity : AppCompatActivity() {
                     scannedResult = result.contents
                   //  txtValue.text = scannedResult
                     ids=scannedResult
-                callOFF(ids)
+                    //callOFF(ids)
                 } else {
                    //txtValue.text = "scan failed"
                 }
@@ -63,6 +63,7 @@ class BarrecodeMainActivity : AppCompatActivity() {
               //  txtValue.text = scannedResult
             }
         }
+    /*
     private fun callOFF(id: String){
 
         runBlocking { mService.loadAPIResponse(id).enqueue(object: Callback<APIResponse> {
@@ -126,10 +127,10 @@ class BarrecodeMainActivity : AppCompatActivity() {
             }
 
         }) }
-    }
+    }*/
 
     private fun getServer(name : String, type : String, date : String, stock:String, unite:Int, id_client : String){
-        val service  = retrofit().create(ProductService::class.java)
+        val service  = retrofit("https://foodlog.min.epf.fr/").create(ProductService::class.java)
         val pref = applicationContext.getSharedPreferences(
             "Foodlog",
             Context.MODE_PRIVATE

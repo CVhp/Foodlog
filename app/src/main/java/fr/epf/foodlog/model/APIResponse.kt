@@ -3,9 +3,9 @@ package fr.epf.foodlog.model
 import fr.epf.foodlog.model.ProductOFF
 
 class APIResponse {
-   private val code: String? = null
+    private val code: String? = null
     private val status_verbose: String? = null
-     private val status: Int? = null
+    private val status: Int? = 1//null
     private val product: ProductOFF? = null
 
     fun getCode(): String? {

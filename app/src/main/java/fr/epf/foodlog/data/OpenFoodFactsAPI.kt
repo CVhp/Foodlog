@@ -7,6 +7,9 @@ import retrofit2.http.Path
 
 
 interface OpenFoodFactsAPI {
-    @GET("produit/{idProduct}.json")
-    fun loadAPIResponse(@Path("idProduct") idProduct: String?): Call<APIResponse>
+    @GET("/api/v0//produit/{idProduct}.json")
+    suspend fun loadAPIResponse(@Path("idProduct") idProduct : String) : GetResult
 }
+
+data class GetResult(val status: String = "", val product: Product = Product())
+data class Product(val product_name: String = "", val quantity: String ="")

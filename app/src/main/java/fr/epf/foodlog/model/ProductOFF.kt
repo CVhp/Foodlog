@@ -4,8 +4,8 @@ import java.io.Serializable
 
 class ProductOFF : Serializable {
      private val generic_name: String? = null
-     private val product_name: String? = null
-     private val quantity: String? = null
+     private val product_name: String? = "test"//null
+     private val quantity: String? = "150" //null
      private val ingredients_text_with_allergens: String? = null
      private val nutrition_grade_fr: String? = null
      private val image_url: String? = null
