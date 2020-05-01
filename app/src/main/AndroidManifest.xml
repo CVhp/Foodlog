@@ -14,10 +14,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-      <!--  <activity android:name=".barecode.BarrecodeMainActivity"></activity>-->
+        <activity android:name=".barecode.BarrecodeMainActivity"></activity>
         <activity android:name=".barecode.BarrecodeActivity" />
         <activity
-            android:name=".barecode.BarrecodeMainActivity"
+            android:name=".LoadingActivities.LoadingActivity"
             android:theme="@style/AppTheme2">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

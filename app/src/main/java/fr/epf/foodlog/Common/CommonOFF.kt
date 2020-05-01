@@ -1,7 +1,6 @@
 package fr.epf.foodlog.Common
 
-import fr.epf.foodlog.barecode.OpenFoodFactsAPI
-import fr.epf.foodlogsprint.remote.ClientAPI
+import fr.epf.foodlog.data.OpenFoodFactsAPI
 import fr.epf.foodlog.Remote.RetrofitClient
 
 object CommonOFF {

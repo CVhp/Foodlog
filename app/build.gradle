@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId "fr.epf.foodlog"
-        minSdkVersion 19
+        minSdkVersion 26
         targetSdkVersion 28
         multiDexEnabled true
         versionCode 1

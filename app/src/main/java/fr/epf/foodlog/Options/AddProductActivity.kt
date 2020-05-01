@@ -3,6 +3,7 @@ package fr.epf.foodlog.Options
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -10,17 +11,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import androidx.annotation.RequiresApi
+import com.google.zxing.integration.android.IntentIntegrator
+import com.google.zxing.integration.android.IntentResult
+import fr.epf.foodlog.Common.CommonOFF
 import fr.epf.foodlog.R
+import fr.epf.foodlog.model.APIResponse
+import fr.epf.foodlog.data.OpenFoodFactsAPI
 import fr.epf.foodlog.service.ProductService
 import fr.epf.foodlog.service.retrofit
 import kotlinx.android.synthetic.main.activity_add_product.*
+import kotlinx.android.synthetic.main.activity_barrecode_main.*
 import kotlinx.android.synthetic.main.stock_dialog.view.*
 import kotlinx.coroutines.runBlocking
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.time.LocalDate
 import java.util.*
 
-class AddProductActivity : AppCompatActivity() {
 
+class AddProductActivity : AppCompatActivity() {
+    private var scannedResult: String = ""
+    internal lateinit var mService: OpenFoodFactsAPI
     private var mDisplayDate: TextView? = null
     private var mDateSetListener: DatePickerDialog.OnDateSetListener? = null
 
@@ -28,6 +40,8 @@ class AddProductActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_product)
+
+        mService = CommonOFF.api
 
         val levels = resources.getStringArray(R.array.level_array)
         val spinner = findViewById<Spinner>(R.id.level_spinner)
@@ -175,6 +189,12 @@ class AddProductActivity : AppCompatActivity() {
 
             finish()
         }
+        fab_scan.setOnClickListener{
+            run {
+                IntentIntegrator(this@AddProductActivity).initiateScan();
+            }
+        }
+
     }
 
     private fun getServer(name : String, type : String, date : String, stock:String, unite:Int, id_client : String){
@@ -188,6 +208,99 @@ class AddProductActivity : AppCompatActivity() {
             val result = service.postProduct("${token}", "${name}", "${type}","${date}", "${stock}", "$unite")
         }
     }
+
+    private fun callOFF(id: String){
+
+        runBlocking { mService.loadAPIResponse(id).enqueue(object: Callback<APIResponse> {
+            override fun onFailure(call: Call<APIResponse>, t: Throwable) {
+                Toast.makeText(
+                    this@AddProductActivity,
+                    "An error occured",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+            override fun onResponse(call: Call<APIResponse>, response: Response<APIResponse>) {
+
+                val name:String
+                val quantity:String
+
+                    val  a=response.body()
+                    if(a!!.getStatus().is != 0){
+                        Toast.makeText(
+                            this@AddProductActivity,
+                            a.getStatus().toString(),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+
+                    if(a.getProduct() != null) {
+
+                        val product = a.getProduct()
+
+                        if (!product!!.getProductName().isNullOrEmpty()) {
+
+                             name = product.getProductName().toString()
+
+                            lastname_edittext.setText(name)
+                        }else{
+                            Toast.makeText(
+                                this@AddProductActivity,
+                                "Name not found",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+
+
+                        if (!product.getQuantity().isNullOrEmpty()) {
+
+                                quantity=product.getQuantity()!!.filter { it.isDigit() }
+
+                            Add_enterQuantite.setText(quantity)
+                        }else{
+                                Toast.makeText(
+                                    this@AddProductActivity,
+                                    "Quantity not found",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                    }
+                    else{
+                        Toast.makeText(
+                            this@AddProductActivity,
+                            "Product not found", //Insert Product in database
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+                    }
+            }
+
+        }) }
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+
+        val result: IntentResult? = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
+
+        if(result != null){
+
+            if(result.contents != null){
+                scannedResult = result.contents
+                val ids=scannedResult
+                callOFF(ids)
+            } else {
+                Toast.makeText(
+                    this@AddProductActivity,
+                    "Scan failed", //Insert Product in database
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data)
+        }
+    }
+
+
 
 
 

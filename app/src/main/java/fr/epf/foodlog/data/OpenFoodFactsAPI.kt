@@ -1,5 +1,6 @@
-package fr.epf.foodlog.barecode
+package fr.epf.foodlog.data
 
+import fr.epf.foodlog.model.APIResponse
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
