@@ -11,6 +11,7 @@ android {
         applicationId "fr.epf.foodlog"
         minSdkVersion 21
         targetSdkVersion 29
+        multiDexEnabled true
         versionCode 1
         versionName "1.0"
 
@@ -58,6 +59,9 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version"
 
     implementation 'com.facebook.stetho:stetho:1.5.1'
+
+    implementation 'com.journeyapps:zxing-android-embedded:3.6.0'
+    implementation 'com.android.support:multidex:1.0.3'
 
     implementation 'com.squareup.retrofit2:retrofit:2.8.1'
     implementation 'com.squareup.retrofit2:converter-moshi:2.8.1'

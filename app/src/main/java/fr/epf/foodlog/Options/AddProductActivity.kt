@@ -3,14 +3,19 @@ package fr.epf.foodlog.Options
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import androidx.annotation.RequiresApi
+import com.google.zxing.integration.android.IntentIntegrator
+import com.google.zxing.integration.android.IntentResult
 import fr.epf.foodlog.R
+import fr.epf.foodlog.service.OpenFoodFactsAPI
 import fr.epf.foodlog.service.ProductService
 import fr.epf.foodlog.service.retrofit
 import kotlinx.android.synthetic.main.activity_add_product.*
@@ -21,6 +26,7 @@ import java.util.*
 
 class AddProductActivity : AppCompatActivity() {
 
+    private var scannedResult: String = ""
     private var mDisplayDate: TextView? = null
     private var mDateSetListener: DatePickerDialog.OnDateSetListener? = null
 
@@ -37,7 +43,7 @@ class AddProductActivity : AppCompatActivity() {
                 android.R.layout.simple_spinner_item, levels)
             spinner.adapter = adapter
             spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
 
                 }
 
@@ -83,11 +89,18 @@ class AddProductActivity : AppCompatActivity() {
 
             }
 
+
+
         var unite:String
         var NumUnite: Int = 0
         var stock: String = ""
+        /*
+        stock = Add_enterQuantite.text.toString()
+        Log.d("stockAPI", "affiche stock")
+        Log.d("stockAPI", "${stock}")*/
 
         Add_enterQuantite.setOnClickListener {
+            Log.d("stockAPI", "enter Add_enterQuantite")
             unite = unite_spinner.selectedItem as String
             val mDialogView = LayoutInflater.from(this).inflate(R.layout.stock_dialog, null)
             // Set a SeekBar change listener
@@ -124,6 +137,7 @@ class AddProductActivity : AppCompatActivity() {
                 .setTitle("Ajout de la quantité")
             //show dialog
             val  mAlertDialog = mBuilder.show()
+
             //add button click of custom layout
             mDialogView.dialogValiderBtn.setOnClickListener {
                 //dismiss dialog
@@ -134,10 +148,9 @@ class AddProductActivity : AppCompatActivity() {
                 }
                 else {
                     stock = mDialogView.stock_edittext.text.toString()
-
                 }
                 //set the input text in TextView
-                if(stock!="" || stock!="- -")
+                if(stock != "")
                     Add_enterQuantite.setText(stock)
                 else
                     Add_enterQuantite.setText("Entrez la quantité")
@@ -155,6 +168,7 @@ class AddProductActivity : AppCompatActivity() {
         add_product_button.setOnClickListener {
             val name = lastname_edittext.text.toString()
             val type : String = level_spinner.selectedItem as String
+            val stockEntre = Add_enterQuantite.text.toString()
             var typeProduct : Int = 0
             when(type){
                 "LEGUME" -> typeProduct = 2
@@ -170,15 +184,22 @@ class AddProductActivity : AppCompatActivity() {
 
             val date = LocalDate.parse(tvDate.text)
 
-            getServer(name, typeProduct.toString(), date.toString(), stock,NumUnite,"2")
+            getServer(name, typeProduct.toString(), date.toString(), stockEntre, NumUnite)
             //Product.all.add(Product("${lastname}",typeProduct,date))
 
             finish()
         }
+
+        fab_scan.setOnClickListener{
+            run {
+                IntentIntegrator(this@AddProductActivity).initiateScan();
+            }
+        }
+
     }
 
-    private fun getServer(name : String, type : String, date : String, stock:String, unite:Int, id_client : String){
-        val service  = retrofit().create(ProductService::class.java)
+    private fun getServer(name : String, type : String, date : String, stock:String, unite:Int){
+        val service  = retrofit("https://foodlog.min.epf.fr/").create(ProductService::class.java)
         val pref = applicationContext.getSharedPreferences(
             "Foodlog",
             Context.MODE_PRIVATE
@@ -186,6 +207,45 @@ class AddProductActivity : AppCompatActivity() {
         val token = pref.getString("token", null);
         runBlocking {
             val result = service.postProduct("${token}", "${name}", "${type}","${date}", "${stock}", "$unite")
+        }
+    }
+
+    private fun callOFFTest(id: String){
+        val service  = retrofit("https://world.openfoodfacts.org/").create(OpenFoodFactsAPI::class.java)
+
+        runBlocking {
+            val result = service.loadAPIResponse(id)
+            lastname_edittext.setText(result.product.product_name)
+            val quantity = result.product.quantity.filter { it.isDigit() }
+            Add_enterQuantite.setText(quantity)
+            val unity = result.product.quantity.filter { it.isLetter() }
+            if (unity == "g"){
+                unite_spinner.setSelection(0)
+            } else {
+                unite_spinner.setSelection(1)
+            }
+
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        val result: IntentResult? = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
+
+        if(result != null){
+            if(result.contents != null){
+                scannedResult = result.contents
+                val ids = scannedResult
+                //callOFF(ids)
+                callOFFTest(ids)
+            } else {
+                Toast.makeText(
+                    this@AddProductActivity,
+                    "Scan failed", //Insert Product in database
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data)
         }
     }
 

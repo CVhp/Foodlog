@@ -336,7 +336,7 @@ class DetailsProductActivity() : AppCompatActivity(){
     }
 
     private fun getServer(name : String, type : String, date : String, stock:String, unite:Int, id_client : String){
-        val service  = retrofit().create(ProductService::class.java)
+        val service  = retrofit("https://foodlog.min.epf.fr/").create(ProductService::class.java)
         val pref = applicationContext.getSharedPreferences(
             "Foodlog",
             Context.MODE_PRIVATE
@@ -410,7 +410,7 @@ class DetailsProductActivity() : AppCompatActivity(){
         }*/
 
         //server database
-        val service = retrofit().create(ProductService::class.java)
+        val service = retrofit("https://foodlog.min.epf.fr/").create(ProductService::class.java)
         val pref = applicationContext.getSharedPreferences(
             "Foodlog",
             Context.MODE_PRIVATE

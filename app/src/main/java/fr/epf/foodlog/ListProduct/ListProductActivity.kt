@@ -76,7 +76,7 @@ class ListProductActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun getServer(){
-        val service  = retrofit().create(ProductService::class.java)
+        val service  = retrofit("https://foodlog.min.epf.fr/").create(ProductService::class.java)
         val database: AppDataBase = Room.databaseBuilder(this, AppDataBase::class.java, "gestionclients")
             .build()
         val productDao : ProductDao = database.getProductDao()

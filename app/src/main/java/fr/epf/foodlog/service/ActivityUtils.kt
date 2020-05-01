@@ -23,7 +23,7 @@ fun AppCompatActivity.productdao() : ProductDao {
     return database.getProductDao()
 }
 
-fun AppCompatActivity.retrofit() : Retrofit {
+fun AppCompatActivity.retrofit(baseURL : String) : Retrofit {
     val httpLoggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
     }
@@ -33,7 +33,7 @@ fun AppCompatActivity.retrofit() : Retrofit {
         .build()
 
     return Retrofit.Builder()
-        .baseUrl("https://foodlog.min.epf.fr/")
+        .baseUrl(baseURL)
         .addConverterFactory(MoshiConverterFactory.create())
         .client(client)
         .build()
