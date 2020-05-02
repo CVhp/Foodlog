@@ -71,16 +71,20 @@ class ProductAdapter(val products: List<Product>) : RecyclerView.Adapter<Product
         val sdf = SimpleDateFormat("yyyy-MM-dd")
         val currentDate = sdf.format(Date())
 
-        val d=LocalDate.parse(currentDate)
-        val limitDa = d.plusDays(2)
+        val today=LocalDate.parse(currentDate)
+        val limitDa = today.plusDays(2)
 
-        if(product.date.isBefore(limitDa) && product.date.isAfter(d)  || product.date.isEqual(d) || product.date.isEqual(limitDa)){
+
+        if((product.date.isBefore(limitDa) && product.date.isAfter(today))  || product.date.isEqual(today) || product.date.isEqual(limitDa)){
             holder.productView.product_date_textview.setTextColor(Color.RED)
         }
-        if(product.date.isBefore(d)){
+
+        if(product.date.isBefore(today)){
             holder.productView.product_date_textview.text="Périmé"
             holder.productView.product_date_textview.setTextColor(Color.RED)
         }
+
+
 
         holder.productView.setOnClickListener {
             Log.d("EPF", "$product")

@@ -1,8 +1,14 @@
 package fr.epf.foodlog.ListProduct
 
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -10,11 +16,16 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.RemoteViews
 import androidx.annotation.RequiresApi
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequest
+import androidx.work.WorkManager
 import fr.epf.foodlog.LoadingActivities.LoadingActivity
+import fr.epf.foodlog.NotifyWork
 import fr.epf.foodlog.Options.AddProductActivity
 import fr.epf.foodlog.R
 import fr.epf.foodlog.data.AppDataBase
@@ -30,11 +41,16 @@ import kotlinx.android.synthetic.main.activity_list_product.*
 import kotlinx.android.synthetic.main.product_view.*
 import kotlinx.android.synthetic.main.product_view.view.*
 import kotlinx.coroutines.runBlocking
+import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 class ListProductActivity : AppCompatActivity() {
 
     private lateinit var adap: ProductAdapter
+    var instanceWorkManager = WorkManager.getInstance(this)
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,15 +69,8 @@ class ListProductActivity : AppCompatActivity() {
         }
         Product.all.clear()
         getServer()
+        scheduleNotification()
 
-//        adap=ProductAdapter(Product.all)
-//        Log.d("RAAAAHHH","${adap.msg.toString()}")
-//        if (adap.msg.toString()=="true"){
-//            checkBox.setVisibility(View.VISIBLE)
-//        }
-//        adap.onItemLongClick= {
-//                    products_recyclerview.checkBox.setVisibility(View.VISIBLE)
-//                }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -72,6 +81,13 @@ class ListProductActivity : AppCompatActivity() {
         Product.all.clear()
         getServer()
 
+    }
+
+    private fun scheduleNotification() {
+        val notificationWork = PeriodicWorkRequest.Builder (NotifyWork :: class.java, 15, TimeUnit.MINUTES)
+        //val notificationWork = PeriodicWorkRequest.Builder (NotifyWork :: class.java, 24, TimeUnit.HOURS)
+
+        instanceWorkManager.enqueueUniquePeriodicWork(NotifyWork.NOTIFICATION_WORK, ExistingPeriodicWorkPolicy .REPLACE, notificationWork.build())
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

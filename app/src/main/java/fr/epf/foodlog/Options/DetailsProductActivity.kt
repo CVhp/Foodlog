@@ -19,6 +19,7 @@ import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.room.Room
 import fr.epf.foodlog.R
 import fr.epf.foodlog.model.Product
@@ -74,6 +75,7 @@ class DetailsProductActivity() : AppCompatActivity(){
         details_stock.text= stock
 
         var RecUnite = intent.getStringExtra("unite")
+        Log.d("unitederec", "${RecUnite}")
         var unite: String
         var NumUnite = 0
 
@@ -194,26 +196,31 @@ class DetailsProductActivity() : AppCompatActivity(){
         }
 
         textViewUnite.setOnLongClickListener {
-            textViewUnite.setVisibility(View.GONE);
-            spinnerUnite.setVisibility(View.VISIBLE);
+            Log.d("Snif", "enter unite")
+            textViewUnite.setVisibility(View.GONE)
+            spinnerUnite.setVisibility(View.VISIBLE)
             if(button.visibility==View.GONE)
-                button.setVisibility(View.VISIBLE);
+                button.setVisibility(View.VISIBLE)
             true
         }
 
         textViewStock.setOnLongClickListener {
-            textViewStock.setVisibility(View.GONE);
-            modifStock.setVisibility(View.VISIBLE);
+            textViewStock.setVisibility(View.GONE)
+            modifStock.setVisibility(View.VISIBLE)
             if(button.visibility==View.GONE)
-                button.setVisibility(View.VISIBLE);
+                button.setVisibility(View.VISIBLE)
             true
         }
 
         edit_stock.setOnClickListener {
-            if (spinnerUnite.visibility==View.VISIBLE)
+            Log.d("Snif", "enter edit_stock")
+            if (spinnerUnite.visibility==View.VISIBLE) {
                 unite = spinnerUnite.selectedItem as String
-            else
+                Log.d("Snif", "${unite}")
+            } else {
                 unite = textViewUnite.text.toString()
+                Log.d("Snif", "${unite}")
+            }
 
             val mDialogView = LayoutInflater.from(this).inflate(R.layout.stock_dialog, null)
             // Set a SeekBar change listener
@@ -235,7 +242,7 @@ class DetailsProductActivity() : AppCompatActivity(){
             })
 
             // Set le input stock
-            if (unite=="Portions" || unite=="portions"){
+            if ( unite=="portions"){
                 mDialogView.seekBar.setVisibility(View.VISIBLE);
                 mDialogView.text_view_seekbar.setVisibility(View.VISIBLE);
                 mDialogView.product_dialog_unite.setText("portions")
@@ -257,7 +264,7 @@ class DetailsProductActivity() : AppCompatActivity(){
                 //dismiss dialog
                 mAlertDialog.dismiss()
                 //get text from EditTexts of custom layout
-                if (unite=="portions" || unite=="Portions"){
+                if (unite=="portions"){
                     stock = mDialogView.text_view_seekbar.text.toString()
                 }
                 else {
@@ -283,6 +290,7 @@ class DetailsProductActivity() : AppCompatActivity(){
         var name: String = ""
         var typeProduct: Int = 0
         var nvdate: LocalDate = LocalDate.parse(details_actif.text)
+
 
         // BOUTON VALIDER MODIF
         button.setOnClickListener {
@@ -326,16 +334,32 @@ class DetailsProductActivity() : AppCompatActivity(){
                     nvdate = LocalDate.parse(dateM.text)
                 }
 
+                var uniteVraie : Int
 
+                if (unite_modif_spinner.visibility == View.VISIBLE){
+                    if (unite_modif_spinner.selectedItem.toString() == "grammes"){
+                        uniteVraie = 1
+                    } else {
+                        uniteVraie = 2
+                    }
+                } else {
+                    if (details_unite.text.toString() == "grammes"){
+                        uniteVraie = 1
+                    } else {
+                        uniteVraie = 2
+                    }
+                }
 
-                getServer(name, typeProduct.toString(), nvdate.toString(), stock,NumUnite,"2")
+                Log.d("envoi", "${uniteVraie}")
+
+                getServer(name, typeProduct.toString(), nvdate.toString(), stock, uniteVraie)
 
                 finish()
         }
 
     }
 
-    private fun getServer(name : String, type : String, date : String, stock:String, unite:Int, id_client : String){
+    private fun getServer(name : String, type : String, date : String, stock:String, unite:Int){
         val service  = retrofit("https://foodlog.min.epf.fr/").create(ProductService::class.java)
         val pref = applicationContext.getSharedPreferences(
             "Foodlog",
@@ -364,7 +388,18 @@ class DetailsProductActivity() : AppCompatActivity(){
                     Log.d("EPF", "Non supprimé")
                 }
                 builder.setPositiveButton(android.R.string.yes){_,_ ->
-                    Product.all.removeAt(id)
+                    val service  = retrofit("https://foodlog.min.epf.fr/").create(ProductService::class.java)
+                    val pref = applicationContext.getSharedPreferences(
+                        "Foodlog",
+                        Context.MODE_PRIVATE
+                    )
+                    val token = pref.getString("token", null);
+
+                    runBlocking {
+                        service.deleteProduct("${token}", id)
+                    }
+
+                    //Product.all.removeAt(id)
                     finish()
                 }
 

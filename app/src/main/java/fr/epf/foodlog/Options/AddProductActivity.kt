@@ -184,6 +184,7 @@ class AddProductActivity : AppCompatActivity() {
 
             val date = LocalDate.parse(tvDate.text)
 
+
             getServer(name, typeProduct.toString(), date.toString(), stockEntre, NumUnite)
             //Product.all.add(Product("${lastname}",typeProduct,date))
 

@@ -26,7 +26,12 @@ interface ProductService {
                               @Query("Date") Date : String,
                               @Query("stock") stock : String,
                               @Query("unite") unite : Int,   //unité du stock: en portion (1) ou en gramme (2)
-                              @Query("ID_product") ID_product : Int)
+                              @Query("product") product : Int)
+
+    @GET("/api/product/deleteProduct.php")
+    suspend fun deleteProduct(@Query("token") token: String,
+                              @Query("ID_product") ID_product: Int
+    )
 
     @GET("/api/product/getProduct.php")
     suspend fun getProducts(@Query("token") token: String) : GetProductResults

@@ -21,8 +21,8 @@
         <item>BOISSON</item>
     </string-array>
     <string-array name="unite_array">
-        <item>Grammes</item>
-        <item>Portions</item>
+        <item>grammes</item>
+        <item>portions</item>
     </string-array>
     <string name="selected_item">Niveau</string>
 
@@ -55,4 +55,7 @@
     <string name="register">Register</string>
     <string name="already_member">Already member ?</string>
     <string name="just_login">Just login</string>
+
+    <string name="notification_title">Attention</string>
+    <string name="notification_subtitle">Certains de vos produits vont bientôt être périmés</string>
 </resources>
