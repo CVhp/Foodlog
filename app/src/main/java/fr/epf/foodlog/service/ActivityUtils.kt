@@ -1,5 +1,6 @@
 package fr.epf.foodlog.service
 
+import android.content.BroadcastReceiver
 import androidx.appcompat.app.AppCompatActivity
 import androidx.room.Room
 import com.facebook.stetho.okhttp3.StethoInterceptor
@@ -24,6 +25,22 @@ fun AppCompatActivity.productdao() : ProductDao {
 }
 
 fun AppCompatActivity.retrofit(baseURL : String) : Retrofit {
+    val httpLoggingInterceptor = HttpLoggingInterceptor().apply {
+        level = HttpLoggingInterceptor.Level.BODY
+    }
+    val client = OkHttpClient.Builder()
+        .addInterceptor(httpLoggingInterceptor)
+        .addNetworkInterceptor(StethoInterceptor())
+        .build()
+
+    return Retrofit.Builder()
+        .baseUrl(baseURL)
+        .addConverterFactory(MoshiConverterFactory.create())
+        .client(client)
+        .build()
+}
+
+fun BroadcastReceiver.retrofit(baseURL : String) : Retrofit {
     val httpLoggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
     }

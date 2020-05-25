@@ -1,50 +1,32 @@
 package fr.epf.foodlog.ListProduct
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.BitmapFactory
-import android.graphics.Color
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.widget.RemoteViews
 import androidx.annotation.RequiresApi
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import fr.epf.foodlog.LoadingActivities.LoadingActivity
-import fr.epf.foodlog.NotifyWork
 import fr.epf.foodlog.Options.AddProductActivity
 import fr.epf.foodlog.R
 import fr.epf.foodlog.data.AppDataBase
-import fr.epf.foodlog.data.ClientDao
 import fr.epf.foodlog.data.ProductDao
 import fr.epf.foodlog.model.CategoryProduct
-import fr.epf.foodlog.model.Client
 import fr.epf.foodlog.model.Product
 import fr.epf.foodlog.model.UnityProduct
 import fr.epf.foodlog.service.ProductService
 import fr.epf.foodlog.service.retrofit
 import kotlinx.android.synthetic.main.activity_list_product.*
-import kotlinx.android.synthetic.main.product_view.*
-import kotlinx.android.synthetic.main.product_view.view.*
 import kotlinx.coroutines.runBlocking
-import java.text.SimpleDateFormat
 import java.time.LocalDate
-import java.util.*
-import java.util.concurrent.TimeUnit
 
 class ListProductActivity : AppCompatActivity() {
 
@@ -69,7 +51,6 @@ class ListProductActivity : AppCompatActivity() {
         }
         Product.all.clear()
         getServer()
-        scheduleNotification()
 
     }
 
@@ -81,13 +62,6 @@ class ListProductActivity : AppCompatActivity() {
         Product.all.clear()
         getServer()
 
-    }
-
-    private fun scheduleNotification() {
-        val notificationWork = PeriodicWorkRequest.Builder (NotifyWork :: class.java, 15, TimeUnit.MINUTES)
-        //val notificationWork = PeriodicWorkRequest.Builder (NotifyWork :: class.java, 24, TimeUnit.HOURS)
-
-        instanceWorkManager.enqueueUniquePeriodicWork(NotifyWork.NOTIFICATION_WORK, ExistingPeriodicWorkPolicy .REPLACE, notificationWork.build())
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

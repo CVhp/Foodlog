@@ -1,5 +1,7 @@
 package fr.epf.foodlog.LoadingActivities
 
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -39,7 +41,6 @@ class SignUpActivity : AppCompatActivity() {
                 edt_password.text.toString()
             )
         }
-
     }
 
 

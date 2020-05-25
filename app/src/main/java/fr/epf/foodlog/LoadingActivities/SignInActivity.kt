@@ -1,15 +1,21 @@
 package fr.epf.foodlog.LoadingActivities
 
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.icu.util.Calendar
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.room.Room
 import fr.epf.foodlog.Common.Common
 import fr.epf.foodlog.ListProduct.ListProductActivity
+import fr.epf.foodlog.Notif.AlarmReceiver
 import fr.epf.foodlog.R
 import fr.epf.foodlog.data.AppDataBase
 import fr.epf.foodlog.data.ClientDao
@@ -26,8 +32,10 @@ import retrofit2.Response
 
 class SignInActivity : AppCompatActivity() {
 
-
     internal lateinit var mService: ClientAPI
+
+    private var alarmMgr: AlarmManager? = null
+    private lateinit var alarmIntent: PendingIntent
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,6 +66,7 @@ class SignInActivity : AppCompatActivity() {
                     Toast.makeText(this@SignInActivity, t!!.message, Toast.LENGTH_SHORT).show()
                 }
 
+                @RequiresApi(Build.VERSION_CODES.N)
                 override fun onResponse(call: Call<ClientAuth>, response: Response<ClientAuth>) {
                     if (response.body()!!.error) {
                         Toast.makeText(
@@ -82,15 +91,38 @@ class SignInActivity : AppCompatActivity() {
                         editor.apply();
                         // finish()
 
+                        beginServiceNotification()
                         val intent = Intent(this@SignInActivity, ListProductActivity::class.java)
                         startActivity(intent)
-
                     }
                 }
+            }
+        )
+    }
 
+    @RequiresApi(Build.VERSION_CODES.N)
+    private fun beginServiceNotification(){
+        alarmMgr = applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmIntent = Intent(this, AlarmReceiver::class.java).let { intent ->
+            PendingIntent.getBroadcast(this, 0, intent, 0)
+        }
 
-            })
+        // Set the alarm to start at approximately 2:00 p.m.
+        val calendar: Calendar = Calendar.getInstance().apply {
+            timeInMillis = System.currentTimeMillis()
+            set(Calendar.HOUR_OF_DAY, 20)
+            set(Calendar.MINUTE, 25)
+        }
 
-
+        // With setInexactRepeating(), you have to use one of the AlarmManager interval
+        // constants--in this case, AlarmManager.INTERVAL_DAY.
+        alarmMgr?.setInexactRepeating(
+            AlarmManager.RTC_WAKEUP,
+            calendar.timeInMillis,
+            AlarmManager.INTERVAL_FIFTEEN_MINUTES,
+            //1000*60*5,
+            alarmIntent
+        )
+        Toast.makeText(this, "Alarm is set", Toast.LENGTH_SHORT).show()
     }
 }

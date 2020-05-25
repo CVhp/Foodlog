@@ -31,6 +31,13 @@
         <activity android:name=".ListProduct.ListProductActivity" />
         <activity android:name=".Options.AddProductActivity" />
         <activity android:name=".Options.DetailsProductActivity" />
+        <activity android:name=".Notif.NotificationActivity"/>
+
+        <receiver android:name=".Notif.AlarmReceiver"
+            android:enabled="true"/>
+
     </application>
+
+
 
 </manifest>
