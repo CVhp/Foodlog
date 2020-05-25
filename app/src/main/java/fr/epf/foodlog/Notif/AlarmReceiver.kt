@@ -43,7 +43,7 @@ class AlarmReceiver : BroadcastReceiver() {
             result.products.map {
                 val limitDate = LocalDate.parse(it.date)
                 //on doit mettre 3 sinon le 2ème jour n'est pas pris en compte (me demander si pas clair)
-                if(limitDate.isEqual(currentDate) || limitDate.isBefore(currentDate.plusDays(3))){
+                if(limitDate.isBefore(currentDate.plusDays(3))){
                     needNotif = true
                     Log.d("token1", "${limitDate}")
                 }
@@ -63,7 +63,7 @@ class AlarmReceiver : BroadcastReceiver() {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
         val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
-        
+
         var builder = context?.let {
             NotificationCompat.Builder(it, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_notifications)

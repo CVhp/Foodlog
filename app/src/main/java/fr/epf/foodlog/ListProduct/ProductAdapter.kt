@@ -72,11 +72,13 @@ class ProductAdapter(val products: List<Product>) : RecyclerView.Adapter<Product
         val currentDate = sdf.format(Date())
 
         val today=LocalDate.parse(currentDate)
-        val limitDa = today.plusDays(2)
+        val limitDa = today.plusDays(3)
 
 
-        if((product.date.isBefore(limitDa) && product.date.isAfter(today))  || product.date.isEqual(today) || product.date.isEqual(limitDa)){
+        if(product.date.isBefore(limitDa)){
             holder.productView.product_date_textview.setTextColor(Color.RED)
+        } else {
+            holder.productView.product_date_textview.setTextColor(Color.BLACK)
         }
 
         if(product.date.isBefore(today)){
