@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA" />
 
 
     <application
@@ -13,7 +14,9 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:hardwareAccelerated="true"
+        >
         <activity
             android:name=".LoadingActivities.LoadingActivity"
             android:theme="@style/AppTheme2">
@@ -32,9 +35,13 @@
         <activity android:name=".Options.AddProductActivity" />
         <activity android:name=".Options.DetailsProductActivity" />
         <activity android:name=".Notif.NotificationActivity"/>
-
+        <meta-data
+            android:name="com.google.android.gms.vision.DEPENDENCIES"
+            android:value="ocr" />
         <receiver android:name=".Notif.AlarmReceiver"
             android:enabled="true"/>
+
+
 
     </application>
 

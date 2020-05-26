@@ -10,7 +10,15 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:id="@+id/layout_add_product">
 <!--                               Nom                               -->
         <TextView
             android:id="@+id/test_textview"
@@ -49,16 +57,30 @@
             android:layout_marginTop="25sp"
             android:text="Date de Péremption"
             android:textSize="18sp" />
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/tvDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10sp"
-            android:layout_marginLeft="20sp"
-            android:hint="Choisir la date"
-            android:textSize="16sp" />
+    <TextView
+        android:id="@+id/tvDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20sp"
+        android:layout_marginTop="10sp"
+        android:hint="Choisir la date"
+        android:textSize="16sp" />
 
+    <Button
+        android:background="#8BC34A"
+        android:layout_width="80dp"
+        android:layout_height="16sp"
+        android:layout_marginTop="10sp"
+        android:layout_marginLeft="20dp"
+        android:id="@+id/button_scan_date"
+        android:textColor="@android:color/white"
+        android:text="Scan date" />
+</LinearLayout>
 <!--                         UNITE                           -->
         <TextView
             android:layout_width="wrap_content"
@@ -91,6 +113,7 @@
             android:text="Entrer la quantité"/>
 
 
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_scan"
             android:layout_width="wrap_content"
@@ -100,16 +123,40 @@
             android:layout_marginBottom="50dp"
             android:src="@drawable/barcode"
             android:tint="@android:color/white" />
+        </LinearLayout>
 
+        <Button
+            android:id="@+id/add_product_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginBottom="0sp"
+            android:text="@string/client_add_button"
+            android:layout_weight="0"/>
     </LinearLayout>
 
-    <!--                               Ajouter                               -->
+
+
+    <!--                       Ajouter                               -->
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/layout_date_scanner">
+    <SurfaceView
+        android:id="@+id/surface_camera_preview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="5"
+    />
     <Button
-        android:id="@+id/add_product_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_marginTop="25sp"
-        android:text="@string/client_add_button" />
+        android:text="Annuler"
+        android:id="@+id/button_back_scan_date"
+        android:layout_weight="1"
+       />
 
+</LinearLayout>
 </FrameLayout>
