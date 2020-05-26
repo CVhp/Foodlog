@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_margin="5dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/lyt_parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/lyt_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/product_imageview"
+                    android:layout_margin="8dp"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"/>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="82dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/product_name_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:text="People Name"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+                
+
+                >
+
+            </LinearLayout>
+            
+<!--            <TextView
+                android:id="@+id/qualite_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="40dp"
+                android:text="qualité"/>
+-->
+            <TextView
+                android:id="@+id/product_date_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="170dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="40dp"
+                android:layout_marginEnd="150dp"
+                android:text="yyyy-mm-dd"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/stock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="86dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="40dp"
+                android:layout_alignParentRight="true"
+                android:text="10"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/product_unite_textView"
+                android:text="grammes"
+                android:textSize="16sp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="40dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                />
+            <!--            <CheckBox-->
+            <!--                android:id="@+id/checkBox"-->
+            <!--                android:visibility="gone"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_alignParentEnd="true"-->
+            <!--                android:layout_below="@id/stock"-->
+            <!--                />-->
+
+        </RelativeLayout>
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
+
+
+
+    <!--<?xml version="1.0" encoding="utf-8"?>-->
+    <!--<androidx.cardview.widget.CardView-->
+    <!--    xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--    xmlns:tools="http://schemas.android.com/tools"-->
+    <!--    android:layout_margin="8dp"-->
+    <!--    android:layout_width="match_parent"-->
+    <!--    android:layout_height="wrap_content">-->
+
+    <!--    <RelativeLayout-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--        android:id="@+id/product_layout"-->
+    <!--        android:padding="8dp">-->
+    <!--        <ImageView-->
+    <!--            android:layout_margin="8dp"-->
+    <!--            android:id="@+id/product_imageview"-->
+    <!--            android:layout_width="50dp"-->
+    <!--            android:layout_height="50dp"/>-->
+    <!--        <TextView-->
+    <!--            tools:text="toto titi"-->
+    <!--            android:textStyle="bold"-->
+    <!--            android:textSize="18sp"-->
+    <!--            android:id="@+id/product_name_textview"-->
+    <!--            android:layout_toEndOf="@id/product_imageview"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"/>-->
+    <!--        <TextView-->
+    <!--            android:id="@+id/product_date_textview"-->
+    <!--            android:text="yyyy-mm-dd"-->
+    <!--            android:layout_toEndOf="@id/product_imageview"-->
+    <!--            android:layout_below="@id/product_name_textview"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"/>-->
+    <!--    </RelativeLayout>-->
+
+    <!--</androidx.cardview.widget.CardView>-->

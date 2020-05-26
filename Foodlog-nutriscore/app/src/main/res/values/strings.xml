@@ -1,0 +1,61 @@
+<resources>
+    <string name="app_name">Foodlog</string>
+    <string name="client_lastname">Nom du produit</string>
+    <string name="client_firstname">Prénom</string>
+    <string name="client_add_button">Ajouter</string>
+    <string name="client_sexe">Sexe</string>
+    <string name="client_email">Email</string>
+
+    <string name="client_age">Age</string>
+
+    <string name="client_niveau">Type du produit à ajouter : </string>
+    <string-array name="level_array">
+        <item>LEGUME</item>
+        <item>FRUIT</item>
+        <item>CEREALE</item>
+        <item>LAITIER</item>
+        <item>SUCRE</item>
+        <item>SALE</item>
+        <item>VIANDE</item>
+        <item>POISSON</item>
+        <item>BOISSON</item>
+    </string-array>
+    <string-array name="unite_array">
+        <item>grammes</item>
+        <item>portions</item>
+    </string-array>
+    <string name="selected_item">Niveau</string>
+
+    <string name="client_actif">Actif</string>
+    <string name="actif_oui">OUI</string>
+    <string name="actif_non">NON</string>
+    <string name="client_femme">Femme</string>
+    <string name="client_homme">Homme</string>
+    <string name="age_display">20</string>
+    <string name="product_delete_confirm_title">Confirmation suppression</string>
+    <string name="product_delete_confirm_message">Voulez vous supprimer le produit %1$s ?</string>
+
+
+    <string name="register_inscription">s\'inscrire</string>
+    <string name="name_inscription">Nom</string>
+    <string name="firstname_inscription">Prénom</string>
+    <string name="email_inscription">Email</string>
+    <string name="password_inscription">Mot de passe</string>
+    <string name="password_confirmation">Confirmation mot de passe</string>
+    <string name="log">Se connecter</string>
+    <string name="password2_inscription">Mot de passe</string>
+    <string name="quantite">Quantité</string>
+    <string name="unite">Unité</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="don_t_have_account_register_now">Don\'t have an account ?</string>
+    <string name="just_register">Just register</string>
+    <string name="name">Name</string>
+    <string name="register">Register</string>
+    <string name="already_member">Already member ?</string>
+    <string name="just_login">Just login</string>
+
+    <string name="notification_title">Attention</string>
+    <string name="notification_subtitle">Certains de vos produits vont bientôt être périmés</string>
+</resources>

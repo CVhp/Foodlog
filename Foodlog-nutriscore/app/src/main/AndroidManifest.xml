@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="fr.epf.foodlog">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
+
+    <application
+        android:name=".ClientApp"
+        android:allowBackup="true"
+        android:icon="@mipmap/logo"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".LoadingActivities.LoadingActivity"
+            android:theme="@style/AppTheme2">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".LoadingActivities.SignInActivity" />
+        <activity android:name=".LoadingActivities.SignUpActivity" />
+        <activity
+            android:name=".WelcomeScreenActivity"
+            android:theme="@style/AppTheme2"></activity>
+        <activity android:name=".ListProduct.ListProductActivity" />
+        <activity android:name=".Options.AddProductActivity" />
+        <activity android:name=".Options.DetailsProductActivity" />
+    </application>
+
+</manifest>
