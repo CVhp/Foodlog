@@ -7,7 +7,6 @@ import android.app.DatePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Camera
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -42,12 +41,9 @@ class AddProductActivity : AppCompatActivity() {
     private var scannedResult: String = ""
     private var mDisplayDate: TextView? = null
     private var mDateSetListener: DatePickerDialog.OnDateSetListener? = null
-    private var camera: CameraSource? = null
     private var Recognizer:TextRecognizer?=null
 
-    private var mCameraSource by Delegates.notNull<CameraSource>()
-
-    private var textRecognizer by Delegates.notNull<TextRecognizer>()
+    private var mCameraSource:CameraSource? = null
     private lateinit var textdetecter: String
     private val PERMISSION_REQUEST_CAMERA = 100
 
@@ -70,8 +66,13 @@ class AddProductActivity : AppCompatActivity() {
             layout_add_product.visibility = (RelativeLayout.VISIBLE)
             layout_date_scanner.visibility = (RelativeLayout.INVISIBLE)
 
-            camera=null
-            camera!!.release()
+            val handler = Handler(Looper.getMainLooper())
+            handler.post {
+                if (mCameraSource != null) {
+                    mCameraSource!!.release();
+                    mCameraSource = null;
+                }}
+
 
         }
 
@@ -315,7 +316,7 @@ class AddProductActivity : AppCompatActivity() {
 
         //textRecognizer = TextRecognizer.Builder(this).build()
         Recognizer=TextRecognizer.Builder(this).build()
-        camera = CameraSource.Builder(applicationContext, Recognizer)
+        mCameraSource = CameraSource.Builder(applicationContext, Recognizer)
             .setFacing(CameraSource.CAMERA_FACING_BACK)
             .setRequestedPreviewSize(1280, 1024)
             .setAutoFocusEnabled(true)
@@ -327,15 +328,16 @@ class AddProductActivity : AppCompatActivity() {
             Log.d("syst", "Dependencies are downloading....try after few moment")
             return
         }
-        camera!!.start(surface_camera_preview.holder)
+        mCameraSource!!.start(surface_camera_preview.holder)
 
         surface_camera_preview.holder.addCallback(object : SurfaceHolder.Callback {
             override fun surfaceChanged(p0: SurfaceHolder?, p1: Int, p2: Int, p3: Int) {
                 Log.d("syst", "surface changed")
+               // camera!!.release()
             }
 
             override fun surfaceDestroyed(p0: SurfaceHolder?) {
-                camera!!.stop()
+                //camera!!.release()
             }
 
             @SuppressLint("MissingPermission")
@@ -343,7 +345,7 @@ class AddProductActivity : AppCompatActivity() {
                 Log.d("syst", "surfaceCreated")
                 try {
                     if (isCameraPermissionGranted()) {
-                        camera!!.start(surface_camera_preview.holder)
+                        mCameraSource!!.start(surface_camera_preview.holder)
                     } else {
                         requestForPermission()
                     }
@@ -379,16 +381,18 @@ class AddProductActivity : AppCompatActivity() {
 
 
                     this@AddProductActivity.runOnUiThread (Runnable{
-                        // val handler = Handler(Looper.getMainLooper())
-                        //handler.post(Runnable {
 
                         layout_date_scanner.visibility = (RelativeLayout.INVISIBLE)
                         layout_add_product.visibility = (RelativeLayout.VISIBLE)
                         tvDate.text = date })
 
-                    camera=null
-                    Recognizer=null
-                    camera!!.release()
+                        val handler = Handler(Looper.getMainLooper())
+                        handler.post {
+                            if (mCameraSource != null) {
+                                mCameraSource!!.release();
+                                mCameraSource = null;
+                            } }
+
 
 
                     //   })
@@ -425,7 +429,7 @@ class AddProductActivity : AppCompatActivity() {
 
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             if (isCameraPermissionGranted()) {
-                camera!!.start(surface_camera_preview.holder)
+                mCameraSource!!.start(surface_camera_preview.holder)
             } else {
                 // toast("Permission need to grant")
                 Log.d("syst", "Permission need to grant")
@@ -508,7 +512,6 @@ class AddProductActivity : AppCompatActivity() {
         }
 
         return ""
-
     }
 
 
