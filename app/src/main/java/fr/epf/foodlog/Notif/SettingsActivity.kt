@@ -38,11 +38,11 @@ class SettingsActivity : AppCompatActivity() {
             if (list.size != 0) {
                 heure = list[0].heure
                 min = list[0].min
-                textView2.text = "Time Set: " + " " + heure + " : " + min + " "
+                textView2.text = "Heure définie : " + " " + heure + " : " + min + " "
             } else {
                 heure = 9
                 min = 0
-                textView2.text = "Default setting: " + " " + heure + " : " + min + " "
+                textView2.text = "Réglage par défaut : " + " " + heure + " : " + min + " "
             }
         }
         timePicker.setIs24HourView(true);
@@ -50,7 +50,7 @@ class SettingsActivity : AppCompatActivity() {
             if (textView != null) {
                 heure = hourOfDay
                 min = minute
-                val text = "Time: " + " " + hourOfDay + " : " + minute + " "
+                val text = "Heure choisie: " + " " + hourOfDay + " : " + minute + " "
                 textView.text = text
                 textView.visibility = View.VISIBLE
             }

@@ -14,7 +14,7 @@
         android:textSize="30sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Time set"/>
+        android:text="Réglage par défaut :"/>
 
     <TimePicker
         android:id="@+id/timePicker"
@@ -29,7 +29,7 @@
         android:textSize="30sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Set Time"/>
+        android:text="Définir une nouvelle heure"/>
 
     <Button
         android:id="@+id/Button_Valider_settings"
