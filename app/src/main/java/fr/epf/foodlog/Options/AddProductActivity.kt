@@ -23,6 +23,7 @@ import com.google.android.gms.vision.text.TextBlock
 import com.google.android.gms.vision.text.TextRecognizer
 import com.google.zxing.integration.android.IntentIntegrator
 import com.google.zxing.integration.android.IntentResult
+import fr.epf.foodlog.LoadingActivities.SignInActivity
 import fr.epf.foodlog.R
 import fr.epf.foodlog.service.OpenFoodFactsAPI
 import fr.epf.foodlog.service.ProductService
@@ -50,33 +51,18 @@ class AddProductActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_product)
 
-        textRecognizer = TextRecognizer.Builder(this).build()
-        mCameraSource = CameraSource.Builder(applicationContext, textRecognizer)
-            .setFacing(CameraSource.CAMERA_FACING_BACK)
-            .setRequestedPreviewSize(1280, 1024)
-            .setAutoFocusEnabled(true)
-            .setRequestedFps(2.0f)
-            .build()
-
-        startCameraSource()
-
-        mCameraSource.stop()
-
         layout_date_scanner.visibility = (RelativeLayout.INVISIBLE)
 
-
         button_scan_date.setOnClickListener {
-            //  surface_camera_preview.visibility=(RelativeLayout.VISIBLE)
-            initCamera()
             startCameraSource()
             layout_date_scanner.visibility = (RelativeLayout.VISIBLE)
             layout_add_product.visibility = (RelativeLayout.INVISIBLE)
         }
         button_back_scan_date.setOnClickListener {
-            mCameraSource.stop()
-            mCameraSource.release()
+
             layout_add_product.visibility = (RelativeLayout.VISIBLE)
             layout_date_scanner.visibility = (RelativeLayout.INVISIBLE)
+            mCameraSource.release()
         }
 
         val levels = resources.getStringArray(R.array.level_array)
@@ -309,7 +295,7 @@ class AddProductActivity : AppCompatActivity() {
     }
 
 
-    private fun initCamera() {
+    private fun startCameraSource() {
         textRecognizer = TextRecognizer.Builder(this).build()
         mCameraSource = CameraSource.Builder(applicationContext, textRecognizer)
             .setFacing(CameraSource.CAMERA_FACING_BACK)
@@ -318,19 +304,11 @@ class AddProductActivity : AppCompatActivity() {
             .setRequestedFps(2.0f)
             .build()
 
-        Log.d("Cam","Camera init")
-    }
-
-    private fun startCameraSource() {
-
-        //  Create text Recognizer
-        // textRecognizer = TextRecognizer.Builder(this).build()
-
-
         if (!textRecognizer.isOperational) {
             Log.d("syst", "Dependencies are downloading....try after few moment")
             return
         }
+        mCameraSource.start(surface_camera_preview.holder)
 
         surface_camera_preview.holder.addCallback(object : SurfaceHolder.Callback {
             override fun surfaceChanged(p0: SurfaceHolder?, p1: Int, p2: Int, p3: Int) {
@@ -377,20 +355,17 @@ class AddProductActivity : AppCompatActivity() {
                 val date = detectDate(textdetecter)
                 Log.d("detection", textdetecter.toString())
                 if (date === "" ) {
-                    Log.d("Cam",date.toString())
-
                 } else {
-                    Log.d("Cam",date.toString())
                     Log.d("StopCam", "StopCam")
 
-                    mCameraSource.release()
-                    mCameraSource.stop()
+                    this@AddProductActivity.runOnUiThread (Runnable{
 
-                    this@AddProductActivity.runOnUiThread(Runnable {
                         layout_date_scanner.visibility = (RelativeLayout.INVISIBLE)
                         layout_add_product.visibility = (RelativeLayout.VISIBLE)
-                    tvDate.text = date
+                        tvDate.text = date
+
                     })
+                    mCameraSource.release()
 
 
                 }
