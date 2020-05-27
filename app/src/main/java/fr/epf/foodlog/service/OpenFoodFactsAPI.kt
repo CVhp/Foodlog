@@ -11,4 +11,4 @@ interface OpenFoodFactsAPI {
 }
 
 data class GetResult(val status: String = "", val product: ProductAPI = ProductAPI())
-data class ProductAPI(val product_name: String = "", val quantity: String ="")
+data class ProductAPI(val product_name: String = "", val quantity: String ="", val nutrition_grade_fr: String="")

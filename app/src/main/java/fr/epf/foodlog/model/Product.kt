@@ -31,15 +31,16 @@ data class Product(
     val stock: Double,
     @TypeConverters(UnityConverter::class)
     val unite: UnityProduct,
+    val nutriscore: String?,
     val uri : String
 ) : Parcelable {
     companion object {
         @RequiresApi(Build.VERSION_CODES.O)
         val all = mutableListOf<Product>(
-            Product(1,"Pomme Pink Lady", CategoryProduct.FRUIT, LocalDate.of(2020, 4, 2),4.0,UnityProduct.Portion, "null"),
-            Product(2, "Aubergine", CategoryProduct.LEGUME, LocalDate.of(2020, 3, 30),3.0,UnityProduct.Portion, "null"),
-            Product(3, "Côte de boeuf", CategoryProduct.VIANDE, LocalDate.of(2020, 3, 30),500.0,UnityProduct.Gramme, "null"),
-            Product(4, "Dorade Grise", CategoryProduct.POISSON, LocalDate.of(2020, 4, 10),300.0,UnityProduct.Gramme, "null")
+            Product(1,"Pomme Pink Lady", CategoryProduct.FRUIT, LocalDate.of(2020, 4, 2),4.0,UnityProduct.Portion, "null", "null"),
+            Product(2, "Aubergine", CategoryProduct.LEGUME, LocalDate.of(2020, 3, 30),3.0,UnityProduct.Portion, "null", "null"),
+            Product(3, "Côte de boeuf", CategoryProduct.VIANDE, LocalDate.of(2020, 3, 30),500.0,UnityProduct.Gramme, "null", "null"),
+            Product(4, "Dorade Grise", CategoryProduct.POISSON, LocalDate.of(2020, 4, 10),300.0,UnityProduct.Gramme, "null", "null")
         )
     }
 }

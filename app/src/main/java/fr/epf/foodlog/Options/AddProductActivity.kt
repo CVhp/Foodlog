@@ -218,9 +218,10 @@ class AddProductActivity : AppCompatActivity() {
             }
 
             val date = LocalDate.parse(tvDate.text)
+            val nutriscore = nutriscore_EditText.text.toString()
 
 
-            getServer(name, typeProduct.toString(), date.toString(), stockEntre, NumUnite)
+            getServer(name, typeProduct.toString(), date.toString(), stockEntre, NumUnite, nutriscore)
             //Product.all.add(Product("${lastname}",typeProduct,date))
 
             finish()
@@ -234,7 +235,7 @@ class AddProductActivity : AppCompatActivity() {
 
     }
 
-    private fun getServer(name: String, type: String, date: String, stock: String, unite: Int) {
+    private fun getServer(name: String, type: String, date: String, stock: String, unite: Int, nutriscore: String) {
         val service = retrofit("https://foodlog.min.epf.fr/").create(ProductService::class.java)
         val pref = applicationContext.getSharedPreferences(
             "Foodlog",
@@ -248,7 +249,8 @@ class AddProductActivity : AppCompatActivity() {
                 "${type}",
                 "${date}",
                 "${stock}",
-                "$unite"
+                "$unite",
+                "${nutriscore}"
             )
         }
     }
@@ -268,6 +270,8 @@ class AddProductActivity : AppCompatActivity() {
             } else {
                 unite_spinner.setSelection(1)
             }
+
+            nutriscore_EditText.setText(result.product.nutrition_grade_fr)
 
         }
     }

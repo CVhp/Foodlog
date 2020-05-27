@@ -11,8 +11,8 @@ interface ProductService {
                             @Query("Type") Type : String,
                             @Query("Date") Date: String,
                             @Query("stock") stock: String,
-                            @Query("unite") unite: String
-    )
+                            @Query("unite") unite: String,
+                            @Query("nutriscore") nutriscore: String?)
 
     @POST ("/api/product/postUri.php")
     suspend fun postUri(@Query("token") token: String,
@@ -39,4 +39,4 @@ interface ProductService {
 
 data class GetProductResults(val products: List<Product> = emptyList())
 
-data class Product(val id : Int, val name: String = "", val type : String = "", val date: String = "", val id_client: String = "", val stock: String="", val unite: Int, val uri : String?="")
+data class Product(val id : Int, val name: String = "", val type : String = "", val date: String = "", val id_client: String = "", val stock: String="", val unite: Int, val nutriscore: String? = "", val uri : String?="")

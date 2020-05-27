@@ -91,6 +91,7 @@ class ListProductActivity : AppCompatActivity() {
                 val date = it.date
                 val stock = it.stock
                 val unite = it.unite
+                val nutriscore = it.nutriscore
                 var uri = it.uri
 
                 var typeCategory : CategoryProduct = CategoryProduct.FRUIT
@@ -117,16 +118,15 @@ class ListProductActivity : AppCompatActivity() {
                 }
 
 
-                Product.all.add(Product(id, name, typeCategory, LocalDate.parse(date),stock.toDouble(),typeUnite, uri))
+                Product.all.add(Product(id, name, typeCategory, LocalDate.parse(date),stock.toDouble(),typeUnite, nutriscore, uri))
 
                 //put into intern BDD
 
-                val product = Product(id, name, typeCategory, LocalDate.parse(date),stock.toDouble(),typeUnite, uri)
+                val product = Product(id, name, typeCategory, LocalDate.parse(date),stock.toDouble(),typeUnite, nutriscore, uri)
 
                 runBlocking {
                     productDao.addProduct(product)
                 }
-
                 Log.d("Produit: ", "$name $type $date")
             }
             Log.d("liste des produits:", "$result")
