@@ -43,6 +43,7 @@ class AddProductActivity : AppCompatActivity() {
     private var mDisplayDate: TextView? = null
     private var mDateSetListener: DatePickerDialog.OnDateSetListener? = null
     private var camera: CameraSource? = null
+    private var Recognizer:TextRecognizer?=null
 
     private var mCameraSource by Delegates.notNull<CameraSource>()
 
@@ -312,16 +313,17 @@ class AddProductActivity : AppCompatActivity() {
 
     private fun startCameraSource() {
 
-        textRecognizer = TextRecognizer.Builder(this).build()
-
-        camera = CameraSource.Builder(applicationContext, textRecognizer)
+        //textRecognizer = TextRecognizer.Builder(this).build()
+        Recognizer=TextRecognizer.Builder(this).build()
+        camera = CameraSource.Builder(applicationContext, Recognizer)
             .setFacing(CameraSource.CAMERA_FACING_BACK)
             .setRequestedPreviewSize(1280, 1024)
             .setAutoFocusEnabled(true)
             .setRequestedFps(2.0f)
             .build()
 
-        if (!textRecognizer.isOperational) {
+
+        if (!Recognizer!!.isOperational) {
             Log.d("syst", "Dependencies are downloading....try after few moment")
             return
         }
@@ -351,7 +353,7 @@ class AddProductActivity : AppCompatActivity() {
             }
         })
 
-        textRecognizer.setProcessor(object : Detector.Processor<TextBlock> {
+        Recognizer!!.setProcessor(object : Detector.Processor<TextBlock> {
             override fun release() {}
 
             override fun receiveDetections(detections: Detector.Detections<TextBlock>) {
@@ -377,19 +379,20 @@ class AddProductActivity : AppCompatActivity() {
 
 
                     this@AddProductActivity.runOnUiThread (Runnable{
-                   // val handler = Handler(Looper.getMainLooper())
-                    //handler.post(Runnable {
+                        // val handler = Handler(Looper.getMainLooper())
+                        //handler.post(Runnable {
 
                         layout_date_scanner.visibility = (RelativeLayout.INVISIBLE)
                         layout_add_product.visibility = (RelativeLayout.VISIBLE)
                         tvDate.text = date })
 
                     camera=null
+                    Recognizer=null
                     camera!!.release()
 
 
-                 //   })
-                  //  mCameraSource.release()
+                    //   })
+                    //  mCameraSource.release()
 
                 }
             }

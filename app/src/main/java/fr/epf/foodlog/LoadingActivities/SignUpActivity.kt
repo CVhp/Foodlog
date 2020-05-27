@@ -30,6 +30,7 @@ class SignUpActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up)
 
+        Toast.makeText(this@SignUpActivity,"Le mot de passe doit comporter au moins une majuscule, un chiffre et 6 caractères",Toast.LENGTH_LONG).show()
 
         mService = Common.api
         txt_login.setOnClickListener { finish() }
@@ -47,8 +48,12 @@ class SignUpActivity : AppCompatActivity() {
                     edt_email.text.toString(),
                     edt_password.text.toString()
                 )
-            }else{
-                Toast.makeText(this@SignUpActivity,"Le mot de passe doit comporter au moins une majuscule, un chiffre et 6 caractères",Toast.LENGTH_LONG).show()
+            }else if (digit==0){
+                Toast.makeText(this@SignUpActivity,"Le mot de passe doit comporter au moins un chiffre",Toast.LENGTH_LONG).show()
+            }else if (maj==0){
+                Toast.makeText(this@SignUpActivity,"Le mot de passe doit comporter au moins une majuscule",Toast.LENGTH_LONG).show()
+            }else if (lenght<=5){
+                Toast.makeText(this@SignUpActivity,"Le mot de passe doit comporter au moins 6 caractères",Toast.LENGTH_LONG).show()
             }
         }
     }
