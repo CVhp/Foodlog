@@ -98,6 +98,7 @@ class ProductAdapter(val products: List<Product>) : RecyclerView.Adapter<Product
             intent.putExtra("clientActive", "${product.date}")
             intent.putExtra("stock", "${product.stock}")
             intent.putExtra("unite", "${product.unite}")
+            intent.putExtra("nutriscore", "${product.nutriscore}")
             intent.putExtra("uri", "${product.uri}" )
 
             it.context.startActivity(intent)

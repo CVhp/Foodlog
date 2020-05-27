@@ -28,7 +28,6 @@ class RecetteActivity : AppCompatActivity(){
         runBlocking {
             val result = service.getRecetteMarmiton(ingredient)
             var str = result.name +
-                    result.rate + "\n" +
                     result.time + "\n"  +
                     result.tags + "\n" +
                     result.difficulty + "\n"

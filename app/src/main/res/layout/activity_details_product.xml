@@ -163,9 +163,10 @@
     </RelativeLayout>
 
     <TextView
+        android:id="@+id/qualite"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="qualité nutritionnelle"
+        android:text="Qualité nutritionnelle"
         android:layout_marginLeft="5dp"/>
 
     <TextView

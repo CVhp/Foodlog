@@ -44,6 +44,7 @@ class DetailsProductActivity() : AppCompatActivity(){
     private var productLastName : String? = null
     private var id : Int = 0
     private var mDateSetListener: DatePickerDialog.OnDateSetListener? = null
+    private var nutriscore: String? = null
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,6 +65,19 @@ class DetailsProductActivity() : AppCompatActivity(){
         }
 
         id = intent.getIntExtra("id", 0)
+
+        nutriscore = intent.getStringExtra("nutriscore")
+        detail_nutriscore.text = nutriscore
+
+        Log.d("blabla", "${nutriscore}")
+
+        if(nutriscore == "null"){
+            detail_nutriscore.setVisibility(View.GONE);
+            qualite.setVisibility(View.GONE);
+        } else {
+            detail_nutriscore.setVisibility(View.VISIBLE);
+            qualite.setVisibility(View.VISIBLE);
+        }
 
         productLastName = intent.getStringExtra("clientLastName")
         details_nom.text= productLastName
