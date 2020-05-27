@@ -1,7 +1,9 @@
 package fr.epf.foodlog.ListProduct
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.util.Log
@@ -9,28 +11,107 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import androidx.room.Room
 import fr.epf.foodlog.Options.DetailsProductActivity
 import fr.epf.foodlog.R
+import fr.epf.foodlog.data.AppDataBase
+import fr.epf.foodlog.data.ProductDao
 import fr.epf.foodlog.model.CategoryProduct
 import fr.epf.foodlog.model.Product
 import fr.epf.foodlog.model.UnityProduct
+import fr.epf.foodlog.service.ProductService
+import fr.epf.foodlog.service.retrofit
 import kotlinx.android.synthetic.main.product_view.view.*
+import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
 
-class ProductAdapter(val products: List<Product>) : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
-    class ProductViewHolder(val productView : View) : RecyclerView.ViewHolder(productView)
+class ProductAdapter(val context: Context, val productInterface: ProductInterface, val products: List<Product>)
+    : RecyclerView.Adapter<ProductViewHolder>(), ViewHolderClickListener  {
+    //class ProductViewHolder(val productView : View) : RecyclerView.ViewHolder(productView)
 
     var msg:Boolean = false
 
+    override fun onLongTap(index: Int) {
+        if (!ListProductActivity.isMultiSelectOn) {
+            ListProductActivity.isMultiSelectOn = true
+        }
+        addIDIntoSelectedIds(index)
+        Log.d("EPF", "$selectedIds")
+    }
+
+    override fun onTap(position: Int) {
+        val product = products[position]
+        if (ListProductActivity.isMultiSelectOn) {
+            addIDIntoSelectedIds(position)
+            Log.d("EPF", "$selectedIds")
+        } else {
+            Log.d("EPF", "$product")
+            msg = false
+            val intent = Intent(context, DetailsProductActivity::class.java) /*this : représente HomeActivity*/
+            intent.putExtra("id", product.id)
+            intent.putExtra("clientLastName", product.name)
+            intent.putExtra("clientGender", "${product.category}")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                intent.putExtra("clientActive", "${product.date}")
+            }
+            intent.putExtra("stock", "${product.stock}")
+            intent.putExtra("unite", "${product.unite}")
+            intent.putExtra("uri", "${product.uri}" )
+
+            context.startActivity(intent)
+        }
+    }
+
+    fun addIDIntoSelectedIds(position: Int) {
+        val product = products[position]
+        if (selectedIds.contains(product.id))
+            selectedIds.remove(product.id)
+        else
+            selectedIds.add(product.id)
+
+        notifyItemChanged(position)
+        if (selectedIds.size < 1) ListProductActivity.isMultiSelectOn = false
+        productInterface.productInterface(selectedIds.size)
+    }
+
+    fun deleteSelectedIds() {
+        Log.d("test", "$selectedIds")
+        if (selectedIds.size < 1) return
+        val selectedIdIteration = selectedIds.listIterator();
+
+        while (selectedIdIteration.hasNext()) {
+            val selectedItemID = selectedIdIteration.next()
+            var indexOfModelList = 0
+            val modelListIteration: MutableListIterator<Product> = modelList.listIterator();
+            while (modelListIteration.hasNext()) {
+                val model = modelListIteration.next()
+                if (selectedItemID.equals(model.id)) {
+                    modelListIteration.remove()
+                    selectedIdIteration.remove()
+                    notifyItemRemoved(indexOfModelList)
+                }
+                indexOfModelList++
+            }
+            ListProductActivity.isMultiSelectOn = false
+        }
+        Log.d("EPF", "$selectedIds")
+    }
+
+    var modelList: MutableList<Product> = ArrayList<Product>()
+    val selectedIds: MutableList<Int> = ArrayList<Int>()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
-        val layoutInflater : LayoutInflater = LayoutInflater.from(parent.context)
+        val layoutInflater : LayoutInflater = LayoutInflater.from(parent?.context)
         val view: View = layoutInflater.inflate(R.layout.product_view, parent, false)
         return ProductViewHolder(
-            view
+            view,
+            this
         )
     }
 
@@ -60,8 +141,6 @@ class ProductAdapter(val products: List<Product>) : RecyclerView.Adapter<Product
             holder.productView.product_imageview.setImageURI(Uri.parse(product.uri))
         }
 
-
-
         holder.productView.stock.text="${product.stock}"
         when (product.unite) {
             UnityProduct.Portion -> holder.productView.product_unite_textView.text= "portions"
@@ -87,31 +166,14 @@ class ProductAdapter(val products: List<Product>) : RecyclerView.Adapter<Product
         }
 
 
-
-        holder.productView.setOnClickListener {
-            Log.d("EPF", "$product")
-            msg = false
-            val intent = Intent(it.context, DetailsProductActivity::class.java) /*this : représente HomeActivity*/
-            intent.putExtra("id", product.id)
-            intent.putExtra("clientLastName", product.name)
-            intent.putExtra("clientGender", "${product.category}")
-            intent.putExtra("clientActive", "${product.date}")
-            intent.putExtra("stock", "${product.stock}")
-            intent.putExtra("unite", "${product.unite}")
-            intent.putExtra("nutriscore", "${product.nutriscore}")
-            intent.putExtra("uri", "${product.uri}" )
-
-            it.context.startActivity(intent)
+        if (selectedIds.contains(product.id)) {
+            //if item is selected then,set foreground color of FrameLayout.
+            holder.linearLayout?.foreground = ColorDrawable(ContextCompat.getColor(context, R.color.colorControlActivated))
+        } else {
+            //else remove selected item color.
+            holder.linearLayout?.foreground = ColorDrawable(ContextCompat.getColor(context, android.R.color.transparent))
         }
-//        holder.productView.setOnLongClickListener{
-//            //onItemLongClick?.invoke(position)
-//            msg = true
-//            holder.productView.checkBox.setVisibility(View.VISIBLE)
-//            Log.d("BOU","$msg")
-//            return@setOnLongClickListener true
-//        }
     }
 
-    //var onItemLongClick: ((Int) -> Unit)? = null
 
 }
