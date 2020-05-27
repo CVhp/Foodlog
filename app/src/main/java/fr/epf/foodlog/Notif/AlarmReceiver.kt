@@ -57,7 +57,7 @@ class AlarmReceiver : BroadcastReceiver() {
 
     @RequiresApi(Build.VERSION_CODES.N)
     private fun sendNotification(context: Context?) {
-
+        /*
         //Pour permettre le tap :
         val intent = Intent(context, NotificationActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -79,7 +79,45 @@ class AlarmReceiver : BroadcastReceiver() {
             if (builder != null) {
                 this?.notify(0, builder.build())
             }
+        }*/
+        val notificationIntent = Intent(context, NotificationActivity::class.java)
+
+        val stackBuilder =
+            TaskStackBuilder.create(context)
+        stackBuilder.addParentStack(NotificationActivity::class.java)
+        stackBuilder.addNextIntent(notificationIntent)
+
+        val pendingIntent =
+            stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+
+        val builder = Notification.Builder(context)
+
+        val notification =
+            builder.setContentTitle("Attention")
+                .setContentText("Certains de vos produits sont périmés")
+                .setTicker("New Message Alert!")
+                .setAutoCancel(true)
+                .setSmallIcon(R.drawable.ic_notifications)
+                .setContentIntent(pendingIntent).build()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            builder.setChannelId(CHANNEL_ID)
         }
+
+        val notificationManager =
+            context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                CHANNEL_ID,
+                "NotificationDemo",
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+            notificationManager.createNotificationChannel(channel)
+        }
+
+        notificationManager.notify(0, notification)
+
     }
 
 }

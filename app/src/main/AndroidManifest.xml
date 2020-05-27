@@ -33,6 +33,7 @@
         <activity android:name=".Options.AddProductActivity" />
         <activity android:name=".Options.DetailsProductActivity" />
         <activity android:name=".Notif.NotificationActivity"/>
+        <activity android:name=".Notif.SettingsActivity"></activity>
 
         <meta-data
             android:name="com.google.android.gms.vision.DEPENDENCIES"

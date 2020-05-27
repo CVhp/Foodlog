@@ -6,17 +6,15 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
-import fr.epf.foodlog.model.CategoryProduct
-import fr.epf.foodlog.model.Client
-import fr.epf.foodlog.model.Product
-import fr.epf.foodlog.model.UnityProduct
+import fr.epf.foodlog.model.*
 import java.time.LocalDate
 
-@Database(entities = [Client::class, Product::class], version = 1)
+@Database(entities = [Client::class, Product::class, Time::class], version = 1)
 @TypeConverters(CategoryConverter::class, LocalDateConverter::class, UnityConverter::class)
 abstract class AppDataBase : RoomDatabase() {
     abstract fun getClientDao() : ClientDao
     abstract fun getProductDao() : ProductDao
+    abstract fun getTimeDao() : TimeDao
 }
 
 class CategoryConverter {

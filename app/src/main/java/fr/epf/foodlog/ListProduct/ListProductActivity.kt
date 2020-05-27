@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
 import androidx.work.WorkManager
 import fr.epf.foodlog.LoadingActivities.LoadingActivity
+import fr.epf.foodlog.Notif.SettingsActivity
 import fr.epf.foodlog.Options.AddProductActivity
 import fr.epf.foodlog.R
 import fr.epf.foodlog.data.AppDataBase
@@ -148,6 +149,11 @@ class ListProductActivity : AppCompatActivity() {
                 editor.clear()
                 editor.apply()
                 val intent = Intent(this, LoadingActivity::class.java)
+                startActivity(intent)
+                true
+            }
+            R.id.action_settings -> {
+                val intent = Intent(this, SettingsActivity::class.java)
                 startActivity(intent)
                 true
             }

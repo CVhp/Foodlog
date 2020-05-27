@@ -19,8 +19,10 @@ import fr.epf.foodlog.Notif.AlarmReceiver
 import fr.epf.foodlog.R
 import fr.epf.foodlog.data.AppDataBase
 import fr.epf.foodlog.data.ClientDao
+import fr.epf.foodlog.data.TimeDao
 import fr.epf.foodlog.model.Client
 import fr.epf.foodlog.model.ClientAuth
+import fr.epf.foodlog.model.Time
 import fr.epf.foodlogsprint.remote.ClientAPI
 import kotlinx.android.synthetic.main.activity_sign_in.*
 import kotlinx.coroutines.runBlocking
@@ -101,28 +103,45 @@ class SignInActivity : AppCompatActivity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    private fun beginServiceNotification(){
+    private fun beginServiceNotification() {
         alarmMgr = applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarmIntent = Intent(this, AlarmReceiver::class.java).let { intent ->
             PendingIntent.getBroadcast(this, 0, intent, 0)
         }
 
-        // Set the alarm to start at approximately 2:00 p.m.
-        val calendar: Calendar = Calendar.getInstance().apply {
-            timeInMillis = System.currentTimeMillis()
-            set(Calendar.HOUR_OF_DAY, 20)
-            set(Calendar.MINUTE, 25)
-        }
+        val database: AppDataBase =
+            Room.databaseBuilder(this, AppDataBase::class.java, "gestionclients")
+                .build()
+        val timeDao: TimeDao = database.getTimeDao()
 
-        // With setInexactRepeating(), you have to use one of the AlarmManager interval
-        // constants--in this case, AlarmManager.INTERVAL_DAY.
-        alarmMgr?.setInexactRepeating(
-            AlarmManager.RTC_WAKEUP,
-            calendar.timeInMillis,
-            AlarmManager.INTERVAL_FIFTEEN_MINUTES,
-            //1000*60*5,
-            alarmIntent
-        )
+        var heure: Int
+        var min: Int
+        runBlocking {
+            val list = timeDao.getTime() as MutableList<Time>
+            if (list.size != 0) {
+                heure = list[0].heure
+                min = list[0].min
+            } else {
+                heure = 9
+                min = 0
+            }
+
+            // Set the alarm to start at approximately 2:00 p.m.
+            val calendar: Calendar = Calendar.getInstance().apply {
+                timeInMillis = System.currentTimeMillis()
+                set(Calendar.HOUR_OF_DAY, heure)
+                set(Calendar.MINUTE, min)
+            }
+
+            // With setInexactRepeating(), you have to use one of the AlarmManager interval
+            // constants--in this case, AlarmManager.INTERVAL_DAY.
+            alarmMgr?.setInexactRepeating(
+                AlarmManager.RTC_WAKEUP,
+                calendar.timeInMillis,
+                AlarmManager.INTERVAL_FIFTEEN_MINUTES,
+                alarmIntent
+            )
+        }
         Toast.makeText(this, "Alarm is set", Toast.LENGTH_SHORT).show()
     }
 }

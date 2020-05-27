@@ -3,6 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/action_settings"
+        android:icon="@drawable/mr_dialog_close_dark"
+        android:title="Settings"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/action_logout"
         android:icon="@drawable/mr_dialog_close_dark"
         android:title="Logout"
