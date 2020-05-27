@@ -7,8 +7,11 @@ import android.app.DatePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Camera
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.SurfaceHolder
@@ -23,7 +26,6 @@ import com.google.android.gms.vision.text.TextBlock
 import com.google.android.gms.vision.text.TextRecognizer
 import com.google.zxing.integration.android.IntentIntegrator
 import com.google.zxing.integration.android.IntentResult
-import fr.epf.foodlog.LoadingActivities.SignInActivity
 import fr.epf.foodlog.R
 import fr.epf.foodlog.service.OpenFoodFactsAPI
 import fr.epf.foodlog.service.ProductService
@@ -40,8 +42,10 @@ class AddProductActivity : AppCompatActivity() {
     private var scannedResult: String = ""
     private var mDisplayDate: TextView? = null
     private var mDateSetListener: DatePickerDialog.OnDateSetListener? = null
+    private var camera: CameraSource? = null
 
     private var mCameraSource by Delegates.notNull<CameraSource>()
+
     private var textRecognizer by Delegates.notNull<TextRecognizer>()
     private lateinit var textdetecter: String
     private val PERMISSION_REQUEST_CAMERA = 100
@@ -51,18 +55,23 @@ class AddProductActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_product)
 
+
+
         layout_date_scanner.visibility = (RelativeLayout.INVISIBLE)
 
         button_scan_date.setOnClickListener {
-            startCameraSource()
             layout_date_scanner.visibility = (RelativeLayout.VISIBLE)
             layout_add_product.visibility = (RelativeLayout.INVISIBLE)
+            startCameraSource()
         }
         button_back_scan_date.setOnClickListener {
 
             layout_add_product.visibility = (RelativeLayout.VISIBLE)
             layout_date_scanner.visibility = (RelativeLayout.INVISIBLE)
-            mCameraSource.release()
+
+            camera=null
+            camera!!.release()
+
         }
 
         val levels = resources.getStringArray(R.array.level_array)
@@ -224,7 +233,9 @@ class AddProductActivity : AppCompatActivity() {
             getServer(name, typeProduct.toString(), date.toString(), stockEntre, NumUnite, nutriscore)
             //Product.all.add(Product("${lastname}",typeProduct,date))
 
-            finish()
+            this@AddProductActivity.runOnUiThread (Runnable{
+                finish()
+            })
         }
 
         fab_scan.setOnClickListener {
@@ -300,8 +311,10 @@ class AddProductActivity : AppCompatActivity() {
 
 
     private fun startCameraSource() {
+
         textRecognizer = TextRecognizer.Builder(this).build()
-        mCameraSource = CameraSource.Builder(applicationContext, textRecognizer)
+
+        camera = CameraSource.Builder(applicationContext, textRecognizer)
             .setFacing(CameraSource.CAMERA_FACING_BACK)
             .setRequestedPreviewSize(1280, 1024)
             .setAutoFocusEnabled(true)
@@ -312,7 +325,7 @@ class AddProductActivity : AppCompatActivity() {
             Log.d("syst", "Dependencies are downloading....try after few moment")
             return
         }
-        mCameraSource.start(surface_camera_preview.holder)
+        camera!!.start(surface_camera_preview.holder)
 
         surface_camera_preview.holder.addCallback(object : SurfaceHolder.Callback {
             override fun surfaceChanged(p0: SurfaceHolder?, p1: Int, p2: Int, p3: Int) {
@@ -320,7 +333,7 @@ class AddProductActivity : AppCompatActivity() {
             }
 
             override fun surfaceDestroyed(p0: SurfaceHolder?) {
-                mCameraSource.stop()
+                camera!!.stop()
             }
 
             @SuppressLint("MissingPermission")
@@ -328,7 +341,7 @@ class AddProductActivity : AppCompatActivity() {
                 Log.d("syst", "surfaceCreated")
                 try {
                     if (isCameraPermissionGranted()) {
-                        mCameraSource.start(surface_camera_preview.holder)
+                        camera!!.start(surface_camera_preview.holder)
                     } else {
                         requestForPermission()
                     }
@@ -362,15 +375,21 @@ class AddProductActivity : AppCompatActivity() {
                 } else {
                     Log.d("StopCam", "StopCam")
 
+
                     this@AddProductActivity.runOnUiThread (Runnable{
+                   // val handler = Handler(Looper.getMainLooper())
+                    //handler.post(Runnable {
 
                         layout_date_scanner.visibility = (RelativeLayout.INVISIBLE)
                         layout_add_product.visibility = (RelativeLayout.VISIBLE)
-                        tvDate.text = date
+                        tvDate.text = date })
 
-                    })
-                    mCameraSource.release()
+                    camera=null
+                    camera!!.release()
 
+
+                 //   })
+                  //  mCameraSource.release()
 
                 }
             }
@@ -403,7 +422,7 @@ class AddProductActivity : AppCompatActivity() {
 
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             if (isCameraPermissionGranted()) {
-                mCameraSource.start(surface_camera_preview.holder)
+                camera!!.start(surface_camera_preview.holder)
             } else {
                 // toast("Permission need to grant")
                 Log.d("syst", "Permission need to grant")

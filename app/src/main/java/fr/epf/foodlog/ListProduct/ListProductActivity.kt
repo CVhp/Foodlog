@@ -38,21 +38,25 @@ class ListProductActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_list_product)
 
-        products_recyclerview.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        products_recyclerview.adapter =
-            ProductAdapter(Product.all)
+        this@ListProductActivity.runOnUiThread (Runnable {
+            super.onCreate(savedInstanceState)
+            setContentView(R.layout.activity_list_product)
 
-        val fab: FloatingActionButton = findViewById(R.id.fab)
-        fab.setOnClickListener {
-            val intent = Intent(this, AddProductActivity::class.java)
-            startActivity(intent)
-        }
-        Product.all.clear()
-        getServer()
+            products_recyclerview.layoutManager =
+                LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+            products_recyclerview.adapter =
+                ProductAdapter(Product.all)
+
+            val fab: FloatingActionButton = findViewById(R.id.fab)
+            fab.setOnClickListener {
+                val intent = Intent(this, AddProductActivity::class.java)
+                startActivity(intent)
+            }
+            Product.all.clear()
+            getServer()
+
+        })
 
     }
 

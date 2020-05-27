@@ -35,11 +35,21 @@ class SignUpActivity : AppCompatActivity() {
         txt_login.setOnClickListener { finish() }
 
         btn_register.setOnClickListener {
-            createNewUser(
-                edt_name.text.toString(),
-                edt_email.text.toString(),
-                edt_password.text.toString()
-            )
+            val passwd=edt_password.text.toString()
+            val digit=passwd.filter {it.isDigit()}.length
+            val maj=passwd.filter {it.isUpperCase()}.length
+            val lenght=passwd.length
+
+            if ((digit>0)&&(maj>0)&&(lenght>5)) {
+
+                createNewUser(
+                    edt_name.text.toString(),
+                    edt_email.text.toString(),
+                    edt_password.text.toString()
+                )
+            }else{
+                Toast.makeText(this@SignUpActivity,"Le mot de passe doit comporter au moins une majuscule, un chiffre et 6 caractères",Toast.LENGTH_LONG).show()
+            }
         }
     }
 
