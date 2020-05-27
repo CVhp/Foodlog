@@ -17,6 +17,7 @@ import androidx.work.WorkManager
 import fr.epf.foodlog.LoadingActivities.LoadingActivity
 import fr.epf.foodlog.Notif.SettingsActivity
 import fr.epf.foodlog.Options.AddProductActivity
+import fr.epf.foodlog.Options.RecetteActivity
 import fr.epf.foodlog.R
 import fr.epf.foodlog.data.AppDataBase
 import fr.epf.foodlog.data.ProductDao
@@ -154,6 +155,11 @@ class ListProductActivity : AppCompatActivity() {
             }
             R.id.action_settings -> {
                 val intent = Intent(this, SettingsActivity::class.java)
+                startActivity(intent)
+                true
+            }
+            R.id.action_recette -> {
+                val intent = Intent(this, RecetteActivity::class.java)
                 startActivity(intent)
                 true
             }

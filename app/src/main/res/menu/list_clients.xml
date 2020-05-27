@@ -3,6 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/action_recette"
+        android:icon="@drawable/ic_search_black_24dp"
+        android:title="Supprimer"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/action_settings"
         android:icon="@drawable/mr_dialog_close_dark"
         android:title="Settings"
