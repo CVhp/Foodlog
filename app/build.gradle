@@ -69,4 +69,7 @@ dependencies {
     implementation 'com.facebook.stetho:stetho-okhttp3:1.5.1'
 
     implementation 'androidx.work:work-runtime:2.1.0-alpha02'
+
+
+    implementation 'com.google.android.gms:play-services-vision:20.0.0'
 }

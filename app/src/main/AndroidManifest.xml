@@ -11,6 +11,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/logo"
         android:label="@string/app_name"
+        android:hardwareAccelerated="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -32,6 +33,10 @@
         <activity android:name=".Options.AddProductActivity" />
         <activity android:name=".Options.DetailsProductActivity" />
         <activity android:name=".Notif.NotificationActivity"/>
+
+        <meta-data
+            android:name="com.google.android.gms.vision.DEPENDENCIES"
+            android:value="ocr" />
 
         <receiver android:name=".Notif.AlarmReceiver"
             android:enabled="true"/>
