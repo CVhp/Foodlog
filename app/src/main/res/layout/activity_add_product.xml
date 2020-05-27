@@ -31,14 +31,13 @@
             <EditText
                 android:id="@+id/lastname_edittext"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10sp" />
+                android:layout_height="wrap_content" />
 
             <!--                         TYPE                         -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="25sp"
+                android:layout_marginTop="15sp"
                 android:text="@string/client_niveau"
                 android:textSize="18sp" />
 
@@ -74,8 +73,8 @@
                 <Button
                     android:background="#8BC34A"
                     android:layout_width="80dp"
-                    android:layout_height="16sp"
-                    android:layout_marginTop="10sp"
+                    android:layout_height="20sp"
+                    android:layout_marginTop="5sp"
                     android:layout_marginLeft="20dp"
                     android:id="@+id/button_scan_date"
                     android:textColor="@android:color/white"
@@ -85,7 +84,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="25sp"
+                android:layout_marginTop="15sp"
                 android:text="@string/unite"
                 android:textSize="18sp" />
 
@@ -100,7 +99,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="25sp"
+                android:layout_marginTop="15sp"
                 android:text="@string/quantite"
                 android:textSize="18sp" />
 
@@ -109,13 +108,13 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/Add_enterQuantite"
                 android:layout_marginLeft="20sp"
-                android:layout_marginTop="10sp"
                 android:text="Entrer la quantité"/>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
+                android:layout_marginTop="10sp"
                 android:text="Qualité nutritionnelle"
                 android:textSize="18sp" />
 
