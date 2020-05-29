@@ -5,36 +5,32 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
-
     <application
-        android:name=".ClientApp"
         android:allowBackup="true"
         android:icon="@mipmap/logo"
         android:label="@string/app_name"
-        android:hardwareAccelerated="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
         <activity
             android:name=".LoadingActivities.LoadingActivity"
             android:theme="@style/AppTheme2">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".LoadingActivities.SignInActivity" />
         <activity android:name=".LoadingActivities.SignUpActivity" />
+
         <activity
             android:name=".WelcomeScreenActivity"
-            android:theme="@style/AppTheme2"></activity>
-        <activity android:name=".ListProduct.ListProductActivity" />
-        <activity android:name=".Options.AddProductActivity" />
-        <activity android:name=".Options.DetailsProductActivity" />
-        <activity android:name=".Notif.NotificationActivity"/>
-        <activity android:name=".Notif.SettingsActivity"></activity>
-        <activity android:name=".Options.RecetteActivity"/>
+            android:theme="@style/AppTheme2"/>
 
         <meta-data
             android:name="com.google.android.gms.vision.DEPENDENCIES"
@@ -42,9 +38,6 @@
 
         <receiver android:name=".Notif.AlarmReceiver"
             android:enabled="true"/>
-
     </application>
-
-
 
 </manifest>

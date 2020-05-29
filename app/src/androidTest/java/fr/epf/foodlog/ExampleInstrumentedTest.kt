@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("fr.epf.foodlogsprint1", appContext.packageName)
+        assertEquals("fr.epf.foodlog", appContext.packageName)
     }
 }

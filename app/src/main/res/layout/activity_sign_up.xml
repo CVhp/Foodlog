@@ -201,7 +201,7 @@
 
                 <TextView
                     android:text="@string/already_member"
-                    android:textColor="@android:color/black"
+                    android:textColor="#80ffffff"
                     android:textSize="12sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
@@ -209,7 +209,7 @@
                 <TextView
                     android:id="@+id/txt_login"
                     android:text="@string/just_login"
-                    android:textColor="@android:color/black"
+                    android:textColor="#ffffff"
                     android:textSize="12sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

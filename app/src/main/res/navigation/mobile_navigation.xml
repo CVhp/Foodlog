@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_listproduct">
+
+    <fragment
+        android:id="@+id/nav_listproduct"
+        android:name="fr.epf.foodlog.ui.ListProduct.ListProductFragment"
+        android:label="@string/menu_listProduct"
+        tools:layout="@layout/fragment_list_product">
+
+        <action
+            android:id="@+id/navigate_to_addProduct_fragment"
+            app:destination="@id/nav_addProduct"/>
+
+        <action
+            android:id="@+id/navigate_to_detailProduct_fragment"
+            app:destination="@id/nav_detailProduct"/>
+
+        <action
+            android:id="@+id/navigate_to_settings_fragment"
+            app:destination="@id/nav_settings"/>
+
+        <action
+            android:id="@+id/navigate_to_recette_fragment"
+            app:destination="@id/nav_recette"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_addProduct"
+        android:name="fr.epf.foodlog.ui.Options.AddProductFragment"
+        android:label="@string/menu_addProduct"
+        tools:layout="@layout/fragment_add_product" >
+        <action
+            android:id="@+id/return_to_listProduct_fragment"
+            app:destination="@id/nav_listproduct"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_recette"
+        android:name="fr.epf.foodlog.ui.Options.RecetteFragment"
+        android:label="@string/menu_recette"
+        tools:layout="@layout/fragment_shopping_list">
+
+        <action
+            android:id="@+id/return_to_listProduct_fragment"
+            app:destination="@id/nav_listproduct"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_detailProduct"
+        android:name="fr.epf.foodlog.ui.Options.DetailsProductFragment"
+        android:label="Détail Produit"
+        tools:layout="@layout/fragment_details_product">
+
+        <action
+            android:id="@+id/return_to_listProduct_fragment"
+            app:destination="@id/nav_listproduct"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_settings"
+        android:name="fr.epf.foodlog.ui.Notif.SettingsFragment"
+        android:label="Settings"
+        tools:layout="@layout/fragment_settings">
+
+        <action
+            android:id="@+id/return_to_listProduct_fragment"
+            app:destination="@id/nav_listproduct"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_shoppinglist"
+        android:name="fr.epf.foodlog.ui.ShoppingList.ShoppingListFragment"
+        android:label="@string/menu_shoppingList"
+        tools:layout="@layout/fragment_shopping_list" />
+
+
+</navigation>

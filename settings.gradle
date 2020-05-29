@@ -1,2 +1,2 @@
-rootProject.name='Foodlog'
+rootProject.name='FoodLog'
 include ':app'

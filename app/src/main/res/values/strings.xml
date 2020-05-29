@@ -1,5 +1,18 @@
 <resources>
-    <string name="app_name">Foodlog</string>
+    <string name="app_name">FoodLog</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_logout">Logout</string>
+
+    <string name="menu_listProduct">Liste Produits</string>
+    <string name="menu_shoppingList">Gallery</string>
+
+    /////
+
     <string name="client_lastname">Nom du produit</string>
     <string name="client_firstname">Prénom</string>
     <string name="client_add_button">Ajouter</string>
@@ -58,4 +71,9 @@
 
     <string name="notification_title">Attention</string>
     <string name="notification_subtitle">Certains de vos produits vont bientôt être périmés</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="menu_recette">Recette</string>
+    <string name="menu_addProduct">Ajout Produit</string>
 </resources>
