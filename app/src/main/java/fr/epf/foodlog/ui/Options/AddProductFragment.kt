@@ -478,7 +478,9 @@ class AddProductFragment : Fragment() {
             val y = b.substring(6)    // annee
             val d = b.substring(0, 2)  // jours
             val m = b.substring(3, 5)  // mois
-            return "$y-$m-$d"
+            if (((d.toInt() >= 1) && (d.toInt() <= 31) && ((m.toInt() >= 1) && (m.toInt() <= 12)))){
+                return "$y-$m-$d"
+            }
         } else {
             pattern = Regex("\\d{4}$a\\d{2}$a\\d{2}")
             if (pattern.containsMatchIn(date)) {
@@ -493,7 +495,9 @@ class AddProductFragment : Fragment() {
                     val d = b.substring(0, 2)
                     val m = b.substring(3, 5)
                     val y = "20" + b.substring(6)
-                    return "$y-$m-$d"
+                    if (((d.toInt() >= 1) && (d.toInt() <= 31) && ((m.toInt() >= 1) && (m.toInt() <= 12)))) {
+                        return "$y-$m-$d"
+                    }
                 } else {
                     pattern = Regex("\\d{4}$a\\d{2}")
                     if (pattern.containsMatchIn(date)) {
@@ -503,7 +507,9 @@ class AddProductFragment : Fragment() {
                         val d = "25"
                         val m = b.substring(5)
                         val y = b.substring(0, 4)
-                        return "$y-$m-$d"
+                        if ((m.toInt() >= 1) && (m.toInt() <= 12)) {
+                            return "$y-$m-$d"
+                        }
                     } else {
                         pattern = Regex("\\d{2}$a\\d{4}")
                         if (pattern.containsMatchIn(date)) {
@@ -513,7 +519,9 @@ class AddProductFragment : Fragment() {
                             val d = "25"
                             val m = b.substring(0, 2)
                             val y = b.substring(3)
-                            return "$y-$m-$d"
+                            if ((m.toInt() >= 1) && (m.toInt() <= 12)) {
+                                return "$y-$m-$d"
+                            }
                         } else {
                             pattern = Regex("\\d{2}$a\\d{2}")
                             if (pattern.containsMatchIn(date)) {
@@ -523,7 +531,9 @@ class AddProductFragment : Fragment() {
                                 val d = "25"
                                 val m = b.substring(0, 2)
                                 val y = "20" + b.substring(3)
-                                return "$y-$m-$d"
+                                if ((m.toInt() >= 1) && (m.toInt() <= 12)) {
+                                    return "$y-$m-$d"
+                                }
                             }
                         }
                     }
@@ -531,7 +541,7 @@ class AddProductFragment : Fragment() {
                 }
             }
         }
-
+        //Toast.makeText(requireContext(), "Date non détectée", Toast.LENGTH_SHORT).show()
         return ""
     }
 

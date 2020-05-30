@@ -119,8 +119,7 @@ class LoadingActivity : AppCompatActivity() {
             alarmMgr?.setInexactRepeating(
                 AlarmManager.RTC_WAKEUP,
                 calendar.timeInMillis,
-                //AlarmManager.INTERVAL_FIFTEEN_MINUTES,
-                1000*60*5,
+                AlarmManager.INTERVAL_FIFTEEN_MINUTES,
                 alarmIntent
             )
 
