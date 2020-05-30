@@ -25,7 +25,7 @@
 
         <action
             android:id="@+id/navigate_to_recette_fragment"
-            app:destination="@id/nav_recette"/>
+            app:destination="@id/nav_recipe"/>
     </fragment>
 
     <fragment
@@ -39,10 +39,14 @@
     </fragment>
 
     <fragment
-        android:id="@+id/nav_recette"
-        android:name="fr.epf.foodlog.ui.Options.RecetteFragment"
+        android:id="@+id/nav_recipe"
+        android:name="fr.epf.foodlog.ui.recipe.RecipeFragment"
         android:label="@string/menu_recette"
-        tools:layout="@layout/fragment_shopping_list">
+        tools:layout="@layout/fragment_recette">
+
+        <action
+            android:id="@+id/navigate_to_detailRecipe_fragment"
+            app:destination="@id/nav_detailRecipe"/>
 
         <action
             android:id="@+id/return_to_listProduct_fragment"
@@ -69,6 +73,17 @@
         <action
             android:id="@+id/return_to_listProduct_fragment"
             app:destination="@id/nav_listproduct"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_detailRecipe"
+        android:name="fr.epf.foodlog.ui.recipe.DetailsRecipeFragment"
+        android:label="Détail Recette"
+        tools:layout="@layout/fragment_details_recipe">
+
+        <action
+            android:id="@+id/return_to_navRecipe_fragment"
+            app:destination="@id/nav_recipe"/>
     </fragment>
 
     <fragment
