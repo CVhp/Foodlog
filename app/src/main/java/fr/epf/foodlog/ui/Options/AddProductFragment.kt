@@ -51,6 +51,7 @@ class AddProductFragment : Fragment() {
     private var mCameraSource:CameraSource? = null
     private lateinit var textdetecter: String
     private val PERMISSION_REQUEST_CAMERA = 100
+    private lateinit var ListDate: MutableList<String>
 
     lateinit var root : View
 
@@ -62,7 +63,6 @@ class AddProductFragment : Fragment() {
     ): View? {
 
         requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-
 
         root =  inflater.inflate(R.layout.fragment_add_product, container, false)
 
@@ -84,6 +84,7 @@ class AddProductFragment : Fragment() {
                     mCameraSource = null;
                 }}
         }
+        ListDate = arrayListOf()
 
         val levels = resources.getStringArray(R.array.level_array)
         val spinner = root.findViewById<Spinner>(R.id.level_spinner)
@@ -343,7 +344,7 @@ class AddProductFragment : Fragment() {
             .setFacing(CameraSource.CAMERA_FACING_BACK)
             .setRequestedPreviewSize(1280, 1024)
             .setAutoFocusEnabled(true)
-            .setRequestedFps(2.0f)
+            .setRequestedFps(10.0f)
             .build()
 
 
@@ -397,31 +398,28 @@ class AddProductFragment : Fragment() {
                 }
                 textdetecter = stringBuilder.toString()
                 val date = detectDate(textdetecter)
-                Log.d("detection", textdetecter.toString())
-                if (date === "" ) {
-                } else {
-                    Log.d("StopCam", "StopCam")
+                if (date != "") {
+                    ListDate.add(date)
+                    val c= ListDate.count{e-> (e==date)}
+                    if (c > 3) {
+                        requireActivity().runOnUiThread(Runnable {
 
+                            root.layout_date_scanner.visibility = (RelativeLayout.INVISIBLE)
+                            root.layout_add_product.visibility = (RelativeLayout.VISIBLE)
+                            root.tvDate.text = date
+                            ListDate = arrayListOf()
+                        })
 
-                    requireActivity().runOnUiThread (Runnable{
-
-                        root.layout_date_scanner.visibility = (RelativeLayout.INVISIBLE)
-                        root.layout_add_product.visibility = (RelativeLayout.VISIBLE)
-                        root.tvDate.text = date })
-
-                    val handler = Handler(Looper.getMainLooper())
-                    handler.post {
-                        if (mCameraSource != null) {
-                            mCameraSource!!.release();
-                            mCameraSource = null;
-                        } }
-
-
-
-                    //   })
-                    //  mCameraSource.release()
-
+                        val handler = Handler(Looper.getMainLooper())
+                        handler.post {
+                            if (mCameraSource != null) {
+                                mCameraSource!!.release();
+                                mCameraSource = null;
+                            }
+                        }
+                    }
                 }
+
             }
         })
     }
