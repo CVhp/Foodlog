@@ -1,6 +1,7 @@
 package fr.epf.foodlog.ui.Options
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -35,24 +36,28 @@ class RecetteFragment : Fragment() {
         val service = retrofit("https://foodlog.min.epf.fr/").create(MarmitonAPI::class.java)
         runBlocking {
             val result = service.getRecetteMarmiton(ingredient)
-            var str = result.name +
-                    result.time + "\n"  +
-                    result.tags + "\n" +
-                    result.difficulty + "\n"
+            result.recipe.map {
+                var str = it.name +
+                        it.time + "\n"  +
+                        it.tags + "\n" +
+                        it.difficulty + "\n"
 
-            var ingredients = ""
-            result.ingredients.forEach {
-                ingredients = ingredients + "\n" + it
+                var ingredients = ""
+                it.ingredients.forEach {
+                    ingredients = ingredients + "\n" + it
+                }
+
+                var steps = ""
+                it.steps.forEach {
+                    steps = steps + "\n" + it
+                }
+
+                str = str + "\n" + ingredients + "\n" + steps
+                Log.d("ftr", "${str}")
             }
 
-            var steps = ""
-            result.steps.forEach {
-                steps = steps + "\n" + it
-            }
 
-            str = str + "\n" + ingredients + "\n" + steps
-
-            root.affiche_recette.setText(str)
+            //root.affiche_recette.setText(str)
         }
     }
 }

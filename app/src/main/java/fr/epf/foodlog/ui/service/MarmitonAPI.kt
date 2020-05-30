@@ -6,9 +6,11 @@ import retrofit2.http.Query
 interface MarmitonAPI {
 
     @GET ("/apimarmiton.php")
-    suspend fun getRecetteMarmiton(@Query("ingredient") ingredient: String) : Recette
+    suspend fun getRecetteMarmiton(@Query("ingredient") ingredient: String) : Recettes
 
 }
+
+data class Recettes (val recipe : List<Recette> = emptyList())
 
 data class Recette(val name: String = "",
                    val rate: String = "",
