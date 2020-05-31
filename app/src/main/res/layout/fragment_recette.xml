@@ -11,17 +11,37 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Effectuer une recherche avec :"/>
+
         <EditText
             android:id="@+id/ingredient_choix"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <Button
-            android:id="@+id/lancer_recherche"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Lancer la recherche"
-            android:layout_gravity="center_horizontal"/>
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/choisir_produits"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Choisir les produits"/>
+
+            <Button
+                android:id="@+id/lancer_recherche"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="Lancer la recherche"/>
+
+        </LinearLayout>
+
+
 
         <TextView
             android:id="@+id/affiche_recette"

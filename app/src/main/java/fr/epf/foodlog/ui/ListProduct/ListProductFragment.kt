@@ -96,7 +96,7 @@ class ListProductFragment : Fragment(), ProductInterface {
                 "Foodlog",
                 Context.MODE_PRIVATE
             )
-            val token = pref.getString("token", null);
+            val token = pref.getString("token", null)
             val result = service.getProducts("$token")
             result.products.map {
                 val id = it.id
