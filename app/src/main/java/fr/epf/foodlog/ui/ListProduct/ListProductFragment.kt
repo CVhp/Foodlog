@@ -33,6 +33,7 @@ class ListProductFragment : Fragment(), ProductInterface {
 
     var adap: ProductAdapter? = null
     var actionMode: ActionMode? = null
+    private var fridge=0
     lateinit var products_recyclerview : RecyclerView
 
     companion object {
@@ -51,6 +52,23 @@ class ListProductFragment : Fragment(), ProductInterface {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
+
+        arguments?.let{
+            val safeArgs=ListProductFragmentArgs.fromBundle(it)
+            fridge=safeArgs.fridge
+
+            val pref = requireContext().getSharedPreferences(
+                "Foodlog",
+                Context.MODE_PRIVATE
+            )
+
+            val editor: SharedPreferences.Editor = pref.edit()
+
+            editor.putInt(
+                "fridge",fridge
+            );
+            editor.apply();
+        }
 
         val root = inflater.inflate(R.layout.fragment_list_product, container, false)
 
@@ -97,7 +115,7 @@ class ListProductFragment : Fragment(), ProductInterface {
                 Context.MODE_PRIVATE
             )
             val token = pref.getString("token", null)
-            val result = service.getProducts("$token")
+            val result = service.getProducts("$token",fridge)
             result.products.map {
                 val id = it.id
                 val name = it.name
@@ -203,8 +221,9 @@ class ListProductFragment : Fragment(), ProductInterface {
                 Context.MODE_PRIVATE
             )
             val token = pref.getString("token", null);
+            val fridge=pref.getInt("fridge",0);
             runBlocking {
-                service.deleteProduct("${token}", 48)
+                service.deleteProduct("${token}",fridge, 48)
             }
             when (item?.getItemId()) {
 
@@ -214,7 +233,7 @@ class ListProductFragment : Fragment(), ProductInterface {
                     //adap?.deleteSelectedIds()
                     val selectedIdIteration = adap?.selectedIds?.listIterator();
                     adap?.selectedIds?.map{runBlocking {
-                        service.deleteProduct("${token}", it )
+                        service.deleteProduct("${token}",fridge, it)
                     }}
                     //while (selectedIdIteration!!.hasNext()) {
                     Log.d("1", "${adap?.selectedIds}")

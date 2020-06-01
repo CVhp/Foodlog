@@ -77,7 +77,7 @@ class RecipeFragment : Fragment() {
             )
             val token = pref.getString("token", null)
 
-            val result = service.getProducts("$token")
+            val result = service.getProducts("$token",0)
             result.products.map {
                 nameProduct = append(nameProduct, it.name)
             }

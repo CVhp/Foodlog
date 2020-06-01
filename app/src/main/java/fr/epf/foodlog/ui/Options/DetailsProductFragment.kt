@@ -362,8 +362,13 @@ class DetailsProductFragment : Fragment() {
 
             getServer(name, typeProduct.toString(), nvdate.toString(), stock, uniteVraie)
 
-            val bundle = Bundle()
-            Navigation.findNavController(it).navigate(R.id.return_to_listProduct_fragment, bundle);
+            val pref = appContext.getSharedPreferences(
+                "Foodlog",
+                Context.MODE_PRIVATE
+            )
+            val fridge = pref.getInt("fridge", 0);
+            val target=DetailsProductFragmentDirections.returnToListProductFragment(fridge)
+            Navigation.findNavController(requireView()).navigate(target);
         }
 
         return root
@@ -377,9 +382,10 @@ class DetailsProductFragment : Fragment() {
             Context.MODE_PRIVATE
         )
         val token = pref.getString("token", null);
+        val fridge = pref.getInt("fridge", 0);
         Log.d("concurence", "${name}  ${type}  ${date}  $id2 "  )
         runBlocking {
-            val result = service.updateProduct("${token}","${name}","${type}","${date}","${stock}", unite, id2)
+            val result = service.updateProduct("${token}",fridge,"${name}","${type}","${date}","${stock}", unite, id2)
         }
     }
 
@@ -410,15 +416,16 @@ class DetailsProductFragment : Fragment() {
                         Context.MODE_PRIVATE
                     )
                     val token = pref.getString("token", null);
+                    val fridge=pref.getInt("fridge",0);
 
                     runBlocking {
-                        service.deleteProduct("${token}", id2)
+                        service.deleteProduct("${token}",fridge, id2)
                     }
 
                     //Product.all.removeAt(id2)
-                    val bundle = Bundle()
-                    Navigation.findNavController(requireView()).navigate(R.id.return_to_listProduct_fragment, bundle);
-
+                   // val bundle = Bundle()
+                    val target=DetailsProductFragmentDirections.returnToListProductFragment(fridge)
+                    Navigation.findNavController(requireView()).navigate(target);
                 }
 
                 builder.show()

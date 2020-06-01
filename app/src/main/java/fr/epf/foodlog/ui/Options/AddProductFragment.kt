@@ -244,8 +244,16 @@ class AddProductFragment : Fragment() {
 
             getServer(name, typeProduct.toString(), date.toString(), stockEntre, NumUnite, nutriscore)
             //Product.all.add(Product("${lastname}",typeProduct,date))
-            val bundle = Bundle()
-            Navigation.findNavController(it).navigate(R.id.return_to_listProduct_fragment, bundle);
+            //val bundle = Bundle()
+            //Navigation.findNavController(it).navigate(R.id.return_to_listProduct_fragment, bundle);
+
+            val pref = requireActivity().getApplicationContext().getSharedPreferences(
+                "Foodlog",
+                Context.MODE_PRIVATE
+            )
+            val fridge=pref.getInt("fridge",0);
+            val target =AddProductFragmentDirections.returnToListProductFragment(fridge)
+            Navigation.findNavController(requireView()).navigate(target);
 
         }
 
@@ -273,6 +281,7 @@ class AddProductFragment : Fragment() {
             Context.MODE_PRIVATE
         )
         val token = pref.getString("token", null);
+        val fridge=pref.getInt("fridge",0);
         runBlocking {
             val result = service.postProduct(
                 "${token}",
@@ -281,6 +290,7 @@ class AddProductFragment : Fragment() {
                 "${date}",
                 "${stock}",
                 "$unite",
+                fridge,
                 "${nutriscore}"
             )
         }
