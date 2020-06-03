@@ -18,7 +18,6 @@ class ShoppingListFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_shopping_list, container, false)
         val textView: TextView = root.findViewById(R.id.text_gallery)
 
-
         return root
     }
 }

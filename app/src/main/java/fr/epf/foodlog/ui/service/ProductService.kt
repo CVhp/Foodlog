@@ -62,6 +62,29 @@ interface ProductService {
         @Field("name") name: String
     )
 
+    @FormUrlEncoded
+    @POST("/apiv2/fridge/getInvitation.php")
+    suspend fun getInvitations(
+        @Field("token") token: String
+    ): GetInvitation
+
+    @FormUrlEncoded
+    @POST("/apiv2/fridge/createInvitation.php")
+    suspend fun postInvitation(
+        @Field("token") token: String,
+        @Field("id_fridge") id_fridge: Int,
+        @Field("profile") profile: Int,
+        @Field("email") email: String
+    )
+
+    @FormUrlEncoded
+    @POST("/apiv2/fridge/confirmInvitation.php")
+    suspend fun confirmInvitation(
+        @Field("token") token: String,
+        @Field("token_invitation") token_invitation: String,
+        @Field("choice") choice: Boolean
+    )
+
 }
 
 data class GetProductResults(val products: List<Product> = emptyList())
@@ -86,5 +109,15 @@ data class ApiGetFridge(
 data class Fridge(
     val id_fridge: Int,
     val name: String,
+    val profile: Int
+)
+
+data class GetInvitation(
+    val invitations: List<Invitations>
+)
+
+data class Invitations(
+    val id_fridge: Int,
+    val token_invitation: String,
     val profile: Int
 )

@@ -116,19 +116,20 @@
             app:destination="@id/nav_listproduct" />
     </fragment>
     <fragment
-        android:id="@+id/invitationFragment"
+        android:id="@+id/nav_invitation"
         android:name="fr.epf.foodlog.ui.invitation.InvitationFragment"
-        android:label="fragment_invitation"
-        tools:layout="@layout/fragment_invitation" >
+        android:label="@string/menu_invitation"
+        tools:layout="@layout/fragment_invitation">
         <action
             android:id="@+id/action_invitationFragment_to_invitationDetailFragment"
-            app:destination="@id/invitationDetailFragment" />
+            app:destination="@id/nav_invitation_create" />
     </fragment>
     <fragment
-        android:id="@+id/invitationDetailFragment"
-        android:name="fr.epf.foodlog.ui.invitation.InvitationDetailFragment"
-        android:label="fragment_invitation_detail"
-        tools:layout="@layout/fragment_invitation_detail" />
+        android:id="@+id/nav_invitation_create"
+        android:name="fr.epf.foodlog.ui.invitation.InvitationCreateFragment"
+        android:label="fragment_invitation_create"
+        tools:layout="@layout/fragment_invitation_create"
+        />
 
 
 </navigation>

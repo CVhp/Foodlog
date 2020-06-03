@@ -10,6 +10,7 @@
 
     <string name="menu_listProduct">Liste Produits</string>
     <string name="menu_shoppingList">Gallery</string>
+    <string name="menu_invitation">Invitations</string>
 
     /////
 
@@ -32,6 +33,10 @@
         <item>VIANDE</item>
         <item>POISSON</item>
         <item>BOISSON</item>
+    </string-array>
+    <string-array name="level_invitation_array">
+        <item>1</item>
+        <item>4</item>
     </string-array>
     <string-array name="unite_array">
         <item>grammes</item>
@@ -76,4 +81,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="menu_recette">Recette</string>
     <string name="menu_addProduct">Ajout Produit</string>
+    <string name="invitation_accept">Accepter</string>
+    <string name="invitation_decline">Refuser</string>
 </resources>

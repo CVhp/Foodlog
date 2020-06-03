@@ -222,9 +222,9 @@ class ListProductFragment : Fragment(), ProductInterface {
             )
             val token = pref.getString("token", null);
             val fridge=pref.getInt("fridge",0);
-            runBlocking {
-                service.deleteProduct("${token}",fridge, 48)
-            }
+            //runBlocking {
+                //service.deleteProduct("${token}",fridge, 48)
+            //}
             when (item?.getItemId()) {
 
                 R.id.action_delete -> {
