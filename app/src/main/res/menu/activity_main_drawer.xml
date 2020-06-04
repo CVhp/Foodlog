@@ -16,5 +16,6 @@
             android:id="@+id/nav_invitation"
             android:icon="@drawable/ic_menu_invitation"
             android:title="@string/menu_invitation" />
+
     </group>
 </menu>
