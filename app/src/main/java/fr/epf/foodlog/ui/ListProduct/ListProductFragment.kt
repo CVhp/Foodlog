@@ -207,6 +207,10 @@ class ListProductFragment : Fragment(), ProductInterface {
                 Navigation.findNavController(requireView()).navigate(R.id.navigate_to_recette_fragment, bundle);
                 true
             }
+            R.id.action_invitation->{
+                val target =ListProductFragmentDirections.actionNavListproductToNavInvitationCreate()
+                Navigation.findNavController(requireView()).navigate(target)
+            }
             else -> true
         }
         return super.onOptionsItemSelected(item)

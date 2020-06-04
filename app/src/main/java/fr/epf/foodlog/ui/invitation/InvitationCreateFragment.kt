@@ -42,13 +42,16 @@ class InvitationCreateFragment : Fragment() {
             val token = pref.getString("token", null);
             val fridge=pref.getInt("fridge",0);
             val service  = retrofit("https://foodlog.min.epf.fr/").create(ProductService::class.java)
-            Log.d("test1", "${fridge}")
 
-            Log.d("test2", "${root.level_invitation.selectedItem}")
+            val email: String = root.email_invitation.text.toString()
 
-            val email: String = "${root.email_invitation.text.toString()}"
-           
-            val profile: Int = root.level_invitation.selectedItem.toString().toInt()
+           val profil =root.level_invitation.selectedItem.toString()
+            var profile=1
+
+            when(profil){
+                "Invité"->  profile=1
+                "Membre"->  profile=4
+            }
 
             runBlocking {
                 service.postInvitation(token!!,fridge, profile, email)

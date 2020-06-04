@@ -16,6 +16,7 @@ import fr.epf.foodlog.ListProduct.ProductAdapter
 
 import fr.epf.foodlog.R
 import fr.epf.foodlog.model.Product
+import fr.epf.foodlog.service.Invitations
 import fr.epf.foodlog.service.ProductService
 import fr.epf.foodlog.service.retrofit
 import fr.epf.foodlog.ui.fridge.AddFridgeFragmentDirections
@@ -35,6 +36,10 @@ import kotlinx.coroutines.runBlocking
  */
 class InvitationFragment : Fragment() {
 
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var invitations:MutableList<Invitations>
+
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -42,7 +47,8 @@ class InvitationFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val root=inflater.inflate(R.layout.fragment_invitation,container,false)
-        val recyclerView: RecyclerView = root.findViewById(R.id.invitation_recyclerview)
+
+         recyclerView = root.findViewById(R.id.invitation_recyclerview)
 
         recyclerView.layoutManager=
             LinearLayoutManager(this.requireContext(), LinearLayoutManager.VERTICAL,false)
@@ -55,19 +61,15 @@ class InvitationFragment : Fragment() {
             Context.MODE_PRIVATE
         )
         val token = pref.getString("token", null);
-
-
+        invitations= arrayListOf()
         runBlocking {
             val result=service.getInvitations(token!!)
-            recyclerView.adapter  = InvitationFragmentAdapter(result.invitations)
+            result.invitations.map{
+                invitations.add(it)
+            }
+            recyclerView.adapter  = InvitationFragmentAdapter(invitations.toList())
         }
 
-               // service.confirmInvitation(token!!, service.getInvitations(token!!).invitations[recyclerView.getChildAdapterPosition(it)].token_invitation, true)
-
-        root.fab_invitation.setOnClickListener {
-            val target= InvitationFragmentDirections.actionInvitationFragmentToInvitationDetailFragment()
-            Navigation.findNavController(requireView()).navigate(target)
-        }
         return root
     }
 

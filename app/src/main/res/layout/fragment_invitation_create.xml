@@ -42,7 +42,19 @@
             android:layout_height="60dp"
             android:gravity="center"
             android:text="Envoyer une invitation"
+
             />
+
+        <TextView
+            android:paddingTop="40dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Invité = Droit de voir"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Membre = Droit d'ajouter/supprimer/editer les produits"/>
+
     </LinearLayout>
 
 </FrameLayout>

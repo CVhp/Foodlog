@@ -2,10 +2,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+
     <item
         android:id="@+id/action_recette"
         android:icon="@drawable/ic_search_black_24dp"
         android:title="Recette"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_invitation"
+        android:icon="@android:drawable/ic_dialog_email"
+        android:title="Invitation"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_settings"

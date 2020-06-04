@@ -29,6 +29,9 @@
         <argument
             android:name="fridge"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_nav_listproduct_to_nav_invitation_create"
+            app:destination="@id/nav_invitation_create" />
     </fragment>
 
     <fragment
@@ -106,8 +109,8 @@
     <fragment
         android:id="@+id/fridgeFragment"
         android:name="fr.epf.foodlog.ui.fridge.FridgeFragment"
-        android:label="fragment_fridge"
-        tools:layout="@layout/fragment_fridge" >
+        android:label="Frigos"
+        tools:layout="@layout/fragment_fridge">
         <action
             android:id="@+id/action_fridgeFragment_to_addFridgeFragment"
             app:destination="@id/addFridgeFragment" />
@@ -121,15 +124,36 @@
         android:label="@string/menu_invitation"
         tools:layout="@layout/fragment_invitation">
         <action
-            android:id="@+id/action_invitationFragment_to_invitationDetailFragment"
-            app:destination="@id/nav_invitation_create" />
+            android:id="@+id/action_nav_invitation_to_invitationDetails"
+            app:destination="@id/invitationDetails3" />
     </fragment>
     <fragment
         android:id="@+id/nav_invitation_create"
         android:name="fr.epf.foodlog.ui.invitation.InvitationCreateFragment"
-        android:label="fragment_invitation_create"
-        tools:layout="@layout/fragment_invitation_create"
-        />
+        android:label="Inviter un amis"
+        tools:layout="@layout/fragment_invitation_create">
+        <action
+            android:id="@+id/action_nav_invitation_create_to_nav_listproduct"
+            app:destination="@id/nav_listproduct" />
+    </fragment>
+    <fragment
+        android:id="@+id/invitationDetails3"
+        android:name="fr.epf.foodlog.ui.invitation.InvitationDetails"
+        android:label="Invitation"
+        tools:layout="@layout/fragment_invitation_details">
+        <argument
+            android:name="tokenInvitation"
+            app:argType="string" />
+        <argument
+            android:name="mailInvitation"
+            app:argType="string" />
+        <argument
+            android:name="fridgeInvitation"
+            app:argType="string" />
+        <argument
+            android:name="profile"
+            app:argType="integer" />
+    </fragment>
 
 
 </navigation>

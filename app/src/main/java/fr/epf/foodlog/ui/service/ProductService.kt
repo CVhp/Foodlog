@@ -117,7 +117,9 @@ data class GetInvitation(
 )
 
 data class Invitations(
-    val id_fridge: Int,
+    val fridge: String,
+    val owner:String,
     val token_invitation: String,
     val profile: Int
+
 )

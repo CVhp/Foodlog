@@ -34,10 +34,12 @@
         <item>POISSON</item>
         <item>BOISSON</item>
     </string-array>
+
     <string-array name="level_invitation_array">
-        <item>1</item>
-        <item>4</item>
+        <item>Invité</item>
+        <item>Membre</item>
     </string-array>
+
     <string-array name="unite_array">
         <item>grammes</item>
         <item>portions</item>
