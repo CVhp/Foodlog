@@ -22,6 +22,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
+import com.bumptech.glide.Glide
 import com.google.android.gms.vision.CameraSource
 import com.google.android.gms.vision.Detector
 import com.google.android.gms.vision.text.TextBlock
@@ -47,6 +48,7 @@ class AddProductFragment : Fragment() {
     private var mDisplayDate: TextView? = null
     private var mDateSetListener: DatePickerDialog.OnDateSetListener? = null
     private var Recognizer:TextRecognizer?=null
+    private var uri:String?=null
 
     private var mCameraSource:CameraSource? = null
     private lateinit var textdetecter: String
@@ -262,7 +264,6 @@ class AddProductFragment : Fragment() {
             root.text_add_nutriscore.visibility = View.VISIBLE
             run {
                 Log.d("frt", "commence scan")
-                //IntentIntegrator(requireActivity()).initiateScan();
                 IntentIntegrator.forSupportFragment(this).initiateScan()
             }
         }
@@ -282,6 +283,7 @@ class AddProductFragment : Fragment() {
         )
         val token = pref.getString("token", null);
         val fridge=pref.getInt("fridge",0);
+       // uri=null
         runBlocking {
             val result = service.postProduct(
                 "${token}",
@@ -291,7 +293,8 @@ class AddProductFragment : Fragment() {
                 "${stock}",
                 "$unite",
                 fridge,
-                "${nutriscore}"
+                "${nutriscore}",
+                uri
             )
         }
     }
@@ -309,6 +312,11 @@ class AddProductFragment : Fragment() {
             Log.d("frt", "${result.product.nutrition_grade_fr}")
             val quantity = result.product.quantity.filter { it.isDigit() }
             Log.d("frt", "${quantity}")
+
+            uri=result.product.image_front_url
+
+
+
             root.Add_enterQuantite.text = quantity
             val unity = result.product.quantity.filter { it.isLetter() }
             if (unity == "g") {

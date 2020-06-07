@@ -41,6 +41,7 @@ class DetailsProductFragment : Fragment() {
     private var nutriscore: String? = null
     lateinit var appContext: Context
     lateinit var root : View
+    private var uri:String?=null
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -99,7 +100,7 @@ class DetailsProductFragment : Fragment() {
         root.details_unite.text= unite
 
 
-        var uri = requireArguments().getString("uri") as String
+        uri = requireArguments().getString("uri") as String
         if (uri == "null"){
             root.product_imageView_details.setImageResource(
                 when(clientSexe){
@@ -477,8 +478,10 @@ class DetailsProductFragment : Fragment() {
             Context.MODE_PRIVATE
         )
         val token = pref.getString("token", null);
+        val fridge=pref.getInt("fridge",0)
         runBlocking {
-            val result = service.postUri("${token}", id2,"${uriPicture}")
+            // ajout upload image au serveur
+            val result = service.postUri("${token}",fridge, id2,"${uriPicture}")
         }
     }
 

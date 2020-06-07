@@ -13,12 +13,14 @@ interface ProductService {
         @Query("stock") stock: String,
         @Query("unite") unite: String,
         @Query("id_fridge") id_fridge: Int,
-        @Query("nutriscore") nutriscore: String?
+        @Query("nutriscore") nutriscore: String?,
+        @Query("uri") uri: String?
     )
 
     @POST("/apiv2/product/postUri.php")
     suspend fun postUri(
         @Query("token") token: String,
+        @Query("id_fridge") id_frige: Int,
         @Query("ID_product") ID_product: Int,
         @Query("uri_image") uri_image: String
     )
@@ -82,7 +84,7 @@ interface ProductService {
     suspend fun confirmInvitation(
         @Field("token") token: String,
         @Field("token_invitation") token_invitation: String,
-        @Field("choice") choice: Boolean
+        @Field("choice") choice: Int
     )
 
 }

@@ -57,14 +57,14 @@ class InvitationDetails : Fragment() {
 
         root.btn_invitation_accept.setOnClickListener {
             runBlocking {
-                service.confirmInvitation(token!!, tokenInvitation, TRUE)
+                service.confirmInvitation(token!!, tokenInvitation, 1)
                 Toast.makeText(requireContext(),"Invitation acceptée",Toast.LENGTH_SHORT).show()
                 requireActivity().onBackPressed()
             }
         }
         root.btn_invitation_decline.setOnClickListener {
             runBlocking {
-                service.confirmInvitation(token!!, tokenInvitation, FALSE)
+                service.confirmInvitation(token!!, tokenInvitation, 2)
                 Toast.makeText(requireContext(),"Invitation refusée",Toast.LENGTH_SHORT).show()
                 requireActivity().onBackPressed()
             }

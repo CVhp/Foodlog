@@ -17,6 +17,7 @@ import androidx.core.os.bundleOf
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
+import com.bumptech.glide.Glide
 import fr.epf.foodlog.R
 import fr.epf.foodlog.data.AppDataBase
 import fr.epf.foodlog.data.ProductDao
@@ -144,7 +145,8 @@ class ProductAdapter(val context: Context, val productInterface: ProductInterfac
                 }
             )
         } else {
-            holder.productView.product_imageview.setImageURI(Uri.parse(product.uri))
+            //holder.productView.product_imageview.setImageURI(Uri.parse(product.uri))
+            Glide.with(holder.productView).load(product.uri).into(holder.productView.product_imageview)
         }
 
         holder.productView.stock.text="${product.stock}"

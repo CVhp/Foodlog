@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@id/fridgeFragment">
+    app:startDestination="@id/nav_listfrigo">
 
     <fragment
         android:id="@+id/nav_listproduct"
@@ -104,10 +104,10 @@
         tools:layout="@layout/fragment_add_fridge" >
         <action
             android:id="@+id/action_addFridgeFragment_to_fridgeFragment"
-            app:destination="@id/fridgeFragment" />
+            app:destination="@id/nav_listfrigo" />
     </fragment>
     <fragment
-        android:id="@+id/fridgeFragment"
+        android:id="@+id/nav_listfrigo"
         android:name="fr.epf.foodlog.ui.fridge.FridgeFragment"
         android:label="Frigos"
         tools:layout="@layout/fragment_fridge">

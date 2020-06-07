@@ -8,6 +8,12 @@
             android:id="@+id/nav_listproduct"
             android:icon="@drawable/ic_menu_camera"
             android:title="@string/menu_listProduct" />
+
+        <item
+            android:id="@+id/nav_listfrigo"
+            android:icon="@drawable/ic_vol_type_speaker_light"
+            android:title="Frigos" />
+
         <item
             android:id="@+id/nav_shoppinglist"
             android:icon="@drawable/ic_menu_gallery"
