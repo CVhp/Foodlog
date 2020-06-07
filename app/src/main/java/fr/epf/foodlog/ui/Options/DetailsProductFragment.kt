@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.navigation.Navigation
+import com.bumptech.glide.Glide
 
 import fr.epf.foodlog.R
 import fr.epf.foodlog.service.ProductService
@@ -117,7 +118,8 @@ class DetailsProductFragment : Fragment() {
                 }
             )
         } else {
-            root.product_imageView_details.setImageURI(Uri.parse(uri))
+            //root.product_imageView_details.setImageURI(Uri.parse(uri))
+            Glide.with(requireContext()).load(Uri.parse(uri)).into(root.product_imageView_details)
         }
 
 
