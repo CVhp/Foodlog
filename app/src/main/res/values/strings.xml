@@ -53,7 +53,7 @@
     <string name="client_homme">Homme</string>
     <string name="age_display">20</string>
     <string name="product_delete_confirm_title">Confirmation suppression</string>
-    <string name="product_delete_confirm_message">Voulez vous supprimer le produit %1$s ?</string>
+    <string name="product_delete_confirm_message">Voulez vous supprimer le produit %r$s ?</string>
 
 
     <string name="register_inscription">s\'inscrire</string>
@@ -85,4 +85,5 @@
     <string name="menu_addProduct">Ajout Produit</string>
     <string name="invitation_accept">Accepter</string>
     <string name="invitation_decline">Refuser</string>
+
 </resources>

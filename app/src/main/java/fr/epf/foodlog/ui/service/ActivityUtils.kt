@@ -9,6 +9,7 @@ import fr.epf.foodlog.data.AppDataBase
 import fr.epf.foodlog.data.ClientDao
 import fr.epf.foodlog.data.ProductDao
 import fr.epf.foodlog.ui.invitation.InvitationFragmentAdapter
+import fr.epf.foodlog.ui.member.MemberFragmentAdapter
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -74,6 +75,22 @@ fun BroadcastReceiver.retrofit(baseURL : String) : Retrofit {
 }
 
 fun Fragment.retrofit(baseURL : String) : Retrofit {
+    val httpLoggingInterceptor = HttpLoggingInterceptor().apply {
+        level = HttpLoggingInterceptor.Level.BODY
+    }
+    val client = OkHttpClient.Builder()
+        .addInterceptor(httpLoggingInterceptor)
+        .addNetworkInterceptor(StethoInterceptor())
+        .build()
+
+    return Retrofit.Builder()
+        .baseUrl(baseURL)
+        .addConverterFactory(MoshiConverterFactory.create())
+        .client(client)
+        .build()
+}
+
+fun MemberFragmentAdapter.retrofit(baseURL : String) : Retrofit {
     val httpLoggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
     }

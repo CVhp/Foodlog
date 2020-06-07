@@ -1,5 +1,6 @@
 package fr.epf.foodlog.service
 
+import android.provider.MediaStore
 import retrofit2.http.*
 
 interface ProductService {
@@ -87,6 +88,21 @@ interface ProductService {
         @Field("choice") choice: Int
     )
 
+    @FormUrlEncoded
+    @POST("/apiv2/fridge/getMembers.php")
+    suspend fun getMembers(
+        @Field("token") token: String,
+        @Field("id_fridge") id_fridge: Int
+    ): GetMember
+
+    @FormUrlEncoded
+    @POST("/apiv2/fridge/fireFromFridge.php")
+    suspend fun deleteMember(
+        @Field("token") token: String,
+        @Field("id_fridge") id_fridge: Int,
+        @Field("email") email: String
+    )
+
 }
 
 data class GetProductResults(val products: List<Product> = emptyList())
@@ -123,5 +139,13 @@ data class Invitations(
     val owner:String,
     val token_invitation: String,
     val profile: Int
+)
 
+data class GetMember(
+    val members: List<Members>
+)
+
+data class Members(
+    val user: String,
+    val profile: Int
 )

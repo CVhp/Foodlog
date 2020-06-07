@@ -23,5 +23,10 @@
             android:icon="@drawable/ic_menu_invitation"
             android:title="@string/menu_invitation" />
 
+        <item
+            android:id="@+id/nav_member"
+            android:icon="@drawable/ic_menu_member"
+            android:title="Membres" />
+
     </group>
 </menu>

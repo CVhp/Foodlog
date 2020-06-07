@@ -154,6 +154,11 @@
             android:name="profile"
             app:argType="integer" />
     </fragment>
+    <fragment
+        android:id="@+id/nav_member"
+        android:name="fr.epf.foodlog.ui.member.MemberFragment"
+        android:label="Membres"
+        tools:layout="@layout/fragment_member" />
 
 
 </navigation>
