@@ -31,10 +31,6 @@ class RecipeFragment : Fragment() {
 
     lateinit var dialog: AlertDialog
 
-    init {
-
-    }
-
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -76,8 +72,8 @@ class RecipeFragment : Fragment() {
                 Context.MODE_PRIVATE
             )
             val token = pref.getString("token", null)
-
-            val result = service.getProducts("$token",0)
+            val fridge = pref.getInt("fridge",0)
+            val result = service.getProducts("$token",fridge)
             result.products.map {
                 nameProduct = append(nameProduct, it.name)
             }
@@ -105,7 +101,7 @@ class RecipeFragment : Fragment() {
                     str += "${nameProduct[i]} + "
                 }
             }
-            str = str.substring(0, str.length-4)
+            str = str.substring(0, str.length-3)
             ingredient_choix.setText(str)
         }
 

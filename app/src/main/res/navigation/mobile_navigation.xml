@@ -26,9 +26,11 @@
         <action
             android:id="@+id/navigate_to_recette_fragment"
             app:destination="@id/nav_recipe"/>
+
         <argument
             android:name="fridge"
-            app:argType="integer" />
+            app:argType="integer"
+            android:defaultValue="0" />
 
         <action
             android:id="@+id/action_nav_listproduct_to_nav_invitation_create"
@@ -113,12 +115,14 @@
         android:name="fr.epf.foodlog.ui.fridge.FridgeFragment"
         android:label="Frigos"
         tools:layout="@layout/fragment_fridge">
+
         <action
             android:id="@+id/action_fridgeFragment_to_addFridgeFragment"
             app:destination="@id/addFridgeFragment" />
         <action
             android:id="@+id/action_fridgeFragment_to_nav_listproduct"
             app:destination="@id/nav_listproduct" />
+
     </fragment>
     <fragment
         android:id="@+id/nav_invitation"

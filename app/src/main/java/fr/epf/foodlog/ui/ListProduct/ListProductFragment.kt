@@ -54,7 +54,8 @@ class ListProductFragment : Fragment(), ProductInterface {
     ): View? {
 
         arguments?.let{
-            val safeArgs=ListProductFragmentArgs.fromBundle(it)
+
+            val safeArgs= ListProductFragmentArgs.fromBundle(it)
             fridge=safeArgs.fridge
 
             val pref = requireContext().getSharedPreferences(
@@ -62,12 +63,17 @@ class ListProductFragment : Fragment(), ProductInterface {
                 Context.MODE_PRIVATE
             )
 
-            val editor: SharedPreferences.Editor = pref.edit()
+            if (fridge != 0){
+                val editor: SharedPreferences.Editor = pref.edit()
+                editor.putInt(
+                    "fridge", fridge
+                )
+                editor.apply()
+            } else if (fridge == 0) {
+                fridge = pref.getInt("fridge", 0)
+            }
 
-            editor.putInt(
-                "fridge",fridge
-            );
-            editor.apply();
+
         }
 
         val root = inflater.inflate(R.layout.fragment_list_product, container, false)

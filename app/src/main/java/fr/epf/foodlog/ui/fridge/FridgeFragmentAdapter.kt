@@ -1,5 +1,6 @@
 package fr.epf.foodlog.ui.fridge
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,8 +28,9 @@ class FridgeFragmentAdapter (val fridges:List<Fridge>) : RecyclerView.Adapter<Fr
         val id :Int =fridge.id_fridge
         holder.fridgeview.setOnClickListener{
 
-          val target =FridgeFragmentDirections.actionFridgeFragmentToNavListproduct(id)
+          val target = FridgeFragmentDirections.actionFridgeFragmentToNavListproduct(id)
             Navigation.findNavController(holder.fridgeview).navigate(target)
+
         }
     }
 

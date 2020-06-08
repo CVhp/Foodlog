@@ -56,21 +56,18 @@ class FridgeFragment : Fragment() {
         )
         val token = pref.getString("token", null);
 
-            root.fab_fridge.setOnClickListener {
+        root.fab_fridge.setOnClickListener {
 
-            val target=FridgeFragmentDirections.actionFridgeFragmentToAddFridgeFragment()
-                Navigation.findNavController(requireView()).navigate(target)
+        val target=FridgeFragmentDirections.actionFridgeFragmentToAddFridgeFragment()
+            Navigation.findNavController(requireView()).navigate(target)
 
-            }
+        }
         runBlocking {
             val result=service.getFridges(token!!)
             Log.d("test", "${result.fridge}")
            // if(!result.error){
 
             recyclerView.adapter=FridgeFragmentAdapter(result.fridge)
-
-          // }
-
 
         }
         return root

@@ -37,7 +37,7 @@ class AddFridgeFragment : Fragment() {
             val service  = retrofit("https://foodlog.min.epf.fr/").create(ProductService::class.java)
             runBlocking { service.postFridge(token!!,root.et_add_fridge.text.toString()) }
 
-            val target=AddFridgeFragmentDirections.actionAddFridgeFragmentToFridgeFragment()
+            val target= AddFridgeFragmentDirections.actionAddFridgeFragmentToFridgeFragment()
              Navigation.findNavController(requireView()).navigate(target)
 
         }
