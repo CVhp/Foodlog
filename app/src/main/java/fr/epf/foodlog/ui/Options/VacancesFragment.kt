@@ -52,12 +52,8 @@ class VacancesFragment : Fragment(), ProductInterface {
         savedInstanceState: Bundle?
     ): View? {
 
-        arguments?.let{
 
-            val safeArgs= ListProductFragmentArgs.fromBundle(it)
-            fridge=safeArgs.fridge
-
-            val pref = requireContext().getSharedPreferences(
+           val pref = requireContext().getSharedPreferences(
                 "Foodlog",
                 Context.MODE_PRIVATE
             )
@@ -71,7 +67,7 @@ class VacancesFragment : Fragment(), ProductInterface {
             } else if (fridge == 0) {
                 fridge = pref.getInt("fridge", 0)
             }
-        }
+
 
         // Inflate the layout for this fragment
         val root = inflater.inflate(R.layout.fragment_vacances, container, false)
@@ -113,7 +109,7 @@ class VacancesFragment : Fragment(), ProductInterface {
 
         requireActivity().runOnUiThread (Runnable {
 
-            products_recyclerview = root.findViewById<View>(R.id.products_recyclerview) as RecyclerView
+            products_recyclerview = root.findViewById<RecyclerView>(R.id.products_recyclerview2)
 
             adap = ProductAdapter(requireContext(), this, Product.all)
             ListProductFragment.isMultiSelectOn = false
