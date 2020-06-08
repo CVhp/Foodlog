@@ -1,5 +1,6 @@
 package fr.epf.foodlog.ui.Options
 
+import UploadResponse
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.DatePickerDialog
@@ -9,22 +10,38 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.navigation.Navigation
 import com.bumptech.glide.Glide
 
 import fr.epf.foodlog.R
 import fr.epf.foodlog.service.ProductService
+import fr.epf.foodlog.service.getFileName
 import fr.epf.foodlog.service.retrofit
 import kotlinx.android.synthetic.main.fragment_details_product.*
 import kotlinx.android.synthetic.main.fragment_details_product.view.*
 import kotlinx.android.synthetic.main.stock_dialog.view.*
 import kotlinx.coroutines.runBlocking
+import net.simplifiedcoding.imageuploader.UploadRequestBody
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.IOException
 import java.time.LocalDate
 import java.util.*
 
@@ -44,6 +61,17 @@ class DetailsProductFragment : Fragment() {
     lateinit var root : View
     private var uri:String?=null
 
+
+    val REQUEST_IMAGE_CAPTURE = 1
+    val REQUEST_TAKE_PHOTO = 1
+    private var selectedImageUri: Uri? = null
+    lateinit var currentPhotoPath: String
+    lateinit var photoUri: Uri
+    lateinit var file : File
+
+
+
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,7 +87,7 @@ class DetailsProductFragment : Fragment() {
                 requestPermissions(permissions, PERMISSION_CODE);
             }
             else {
-                pickImageFromGallery()
+                takePicture()
             }
         }
 
@@ -364,7 +392,7 @@ class DetailsProductFragment : Fragment() {
             Log.d("envoi", "${uniteVraie}")
 
             getServer(name, typeProduct.toString(), nvdate.toString(), stock, uniteVraie)
-
+            uploadImage()
             val pref = appContext.getSharedPreferences(
                 "Foodlog",
                 Context.MODE_PRIVATE
@@ -439,28 +467,74 @@ class DetailsProductFragment : Fragment() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(requestCode==REQUEST_TAKE_PHOTO && resultCode==Activity.RESULT_OK){
+            product_imageView_details.rotation=90f
+            product_imageView_details.setImageURI(Uri.parse(currentPhotoPath))
+        }
         super.onActivityResult(requestCode, resultCode, data)
-        /*if (requestCode == CLICK_ON_IMAGE) {
-            /*val bitmap = data?.getParcelableExtra("data") as? Bitmap //= if data est null on créée bitmap
-            Log.d("EPF", "image")
-            product_imageView_details.setImageBitmap(bitmap)*/
-            pickImageFromGallery()
-        }*/
-        if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE){
-            val uriPicture = data?.data
-            if (uriPicture != null){
-                product_imageView_details.setImageURI(uriPicture)
-                Log.d("test", "${uriPicture}")
-                addUriDataBase(uriPicture)
+    }
+    private fun takePicture(){
+        val intent =Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        if(intent.resolveActivity(requireContext().packageManager)!=null){
+            var photoFile:File?=null
+            try {
+                photoFile=createImageFile()
+            }catch (e: IOException){}
+            if(photoFile!=null){
+                photoUri= FileProvider.getUriForFile(requireContext(),"fr.epf.foodlog.fileprovider",photoFile)
+                intent.putExtra(MediaStore.EXTRA_OUTPUT,photoUri)
+                startActivityForResult(intent,REQUEST_TAKE_PHOTO)
+                selectedImageUri=photoUri
             }
         }
     }
+    private fun createImageFile(): File?{
+        val fileName="MyPicture"
+        val storageDir=requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val image=File.createTempFile(
+            fileName,".jpg",storageDir        )
+        currentPhotoPath=image.absolutePath
+        return image
+    }
+
+    private fun uploadImage() {
+        if (selectedImageUri == null) {
+            // layout_root.snackbar("Select an Image First")
+            //  return
+        }
+
+        val parcelFileDescriptor =  requireContext().contentResolver.openFileDescriptor(selectedImageUri!!, "r", null)
+
+        val inputStream = FileInputStream(parcelFileDescriptor!!.fileDescriptor)
+        file = File(requireContext().cacheDir, requireContext().contentResolver.getFileName(selectedImageUri!!))
+        val outputStream = FileOutputStream(file)
+        inputStream.copyTo(outputStream)
+        appContext = requireActivity().getApplicationContext()
+        val pref = appContext.getSharedPreferences(
+            "Foodlog",
+            Context.MODE_PRIVATE
+        )
+        val fridge=pref.getInt("fridge",0)
+
+       // progress_bar.progress = 0
+        val body = UploadRequestBody(file, "image")
+        val service = retrofit("https://foodlog.min.epf.fr/").create(ProductService::class.java)
+
+        runBlocking { service.uploadImage(MultipartBody.Part.createFormData("image",file.name,body),RequestBody.create("multipart/form-data".toMediaTypeOrNull(), "json"), id2)
+        }
+        requireContext().applicationContext.contentResolver.delete(photoUri,null,null)
+     }
+
+
+
 
     private fun pickImageFromGallery() {
         val intent = Intent(Intent.ACTION_PICK)
         intent.type = "image/*"
         startActivityForResult(intent, IMAGE_PICK_CODE)
     }
+
+
 
     private fun addUriDataBase(uriPicture : Uri?) {
         /*
@@ -483,7 +557,7 @@ class DetailsProductFragment : Fragment() {
         val fridge=pref.getInt("fridge",0)
         runBlocking {
             // ajout upload image au serveur
-            val result = service.postUri("${token}",fridge, id2,"${uriPicture}")
+           // val result = service.postUri("${token}",fridge, id2,"${uriPicture}")
         }
     }
 

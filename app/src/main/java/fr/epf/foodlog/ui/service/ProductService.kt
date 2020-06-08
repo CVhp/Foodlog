@@ -1,6 +1,8 @@
 package fr.epf.foodlog.service
 
 import android.provider.MediaStore
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.http.*
 
 interface ProductService {
@@ -101,6 +103,14 @@ interface ProductService {
         @Field("token") token: String,
         @Field("id_fridge") id_fridge: Int,
         @Field("email") email: String
+    )
+
+    @Multipart
+    @POST("/apiv2/upload_image.php?apicall=upload")
+    suspend fun uploadImage(
+        @Part image: MultipartBody.Part,
+        @Part("desc") desc: RequestBody,
+        @Part("id_product")id_product:Int
     )
 
 }
