@@ -1,15 +1,14 @@
-package fr.epf.foodlog.ui.ListProduct
+package fr.epf.foodlog.ui.Options
 
+import android.app.DatePickerDialog
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.TextView
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
+import androidx.annotation.RequiresApi
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,7 +16,6 @@ import androidx.room.Room
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import fr.epf.foodlog.ListProduct.ProductAdapter
 import fr.epf.foodlog.ListProduct.ProductInterface
-import fr.epf.foodlog.LoadingActivities.LoadingActivity
 import fr.epf.foodlog.R
 import fr.epf.foodlog.data.AppDataBase
 import fr.epf.foodlog.data.ProductDao
@@ -26,19 +24,21 @@ import fr.epf.foodlog.model.Product
 import fr.epf.foodlog.model.UnityProduct
 import fr.epf.foodlog.service.ProductService
 import fr.epf.foodlog.service.retrofit
+import fr.epf.foodlog.ui.ListProduct.ListProductFragment
+import fr.epf.foodlog.ui.ListProduct.ListProductFragmentArgs
+import kotlinx.android.synthetic.main.fragment_add_product.view.*
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
+import java.util.*
 
-class ListProductFragment : Fragment(), ProductInterface {
 
-    var adap: ProductAdapter? = null
-    var actionMode: ActionMode? = null
+class VacancesFragment : Fragment(), ProductInterface {
+
+    private var mDateSetListener: DatePickerDialog.OnDateSetListener? = null
     private var fridge=0
     lateinit var products_recyclerview : RecyclerView
-
-    companion object {
-        var isMultiSelectOn = false
-    }
+    var actionMode: ActionMode? = null
+    var adap: ProductAdapter? = null
 
     override fun productInterface(size: Int) {
         if (actionMode == null) actionMode = requireActivity().startActionMode(ActionModeCallback())
@@ -48,9 +48,8 @@ class ListProductFragment : Fragment(), ProductInterface {
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
 
         arguments?.let{
@@ -74,29 +73,60 @@ class ListProductFragment : Fragment(), ProductInterface {
             }
         }
 
-        val root = inflater.inflate(R.layout.fragment_list_product, container, false)
+        // Inflate the layout for this fragment
+        val root = inflater.inflate(R.layout.fragment_vacances, container, false)
+
+        root.tvDate.setOnClickListener(View.OnClickListener {
+            val cal: Calendar = Calendar.getInstance()
+            val year: Int = cal.get(Calendar.YEAR)
+            val month: Int = cal.get(Calendar.MONTH)
+            val day: Int = cal.get(Calendar.DAY_OF_MONTH)
+            val dialog = DatePickerDialog(
+                requireContext(),
+                mDateSetListener,
+                year, month, day
+            )
+            dialog.show()
+        })
+
+        mDateSetListener =
+            DatePickerDialog.OnDateSetListener { datePicker, year, month, day ->
+                var month = month
+                var date_month: String = ""
+                var date_day: String = ""
+                month = month + 1
+                if ("${month}".length == 1) {
+                    date_month = "0$month"
+                } else {
+                    date_month = "$month"
+                }
+
+                if ("${day}".length == 1) {
+                    date_day = "0$day"
+                } else {
+                    date_day = "$day"
+                }
+                val date = "$year-$date_month-$date_day"
+                root.tvDate.text = date
+
+            }
 
         requireActivity().runOnUiThread (Runnable {
 
             products_recyclerview = root.findViewById<View>(R.id.products_recyclerview) as RecyclerView
 
             adap = ProductAdapter(requireContext(), this, Product.all)
-            isMultiSelectOn = false
+            ListProductFragment.isMultiSelectOn = false
 
             products_recyclerview.layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
             products_recyclerview.adapter =
                 adap
 
-            var fab = root.findViewById<FloatingActionButton>(R.id.fab)
-            fab.setOnClickListener {
-                //ADDPRODUCT FRAGMENT
-                val bundle = Bundle()
-                Navigation.findNavController(it).navigate(R.id.navigate_to_addProduct_fragment,bundle);
-            }
             Product.all.clear()
             getServer()
         })
+
 
         return root
     }
@@ -110,7 +140,6 @@ class ListProductFragment : Fragment(), ProductInterface {
         runBlocking {
             productDao.deleteProducts() //permet de clear la base de donnée interne products
         }
-
 
         runBlocking {
             val appContext = requireActivity().getApplicationContext()
@@ -181,57 +210,16 @@ class ListProductFragment : Fragment(), ProductInterface {
         super.onResume()
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        setHasOptionsMenu(true)
-        super.onCreate(savedInstanceState)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.main, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
-            R.id.action_logout -> {
-                val pref = requireActivity().getApplicationContext().getSharedPreferences("Foodlog",Context.MODE_PRIVATE)
-                val editor: SharedPreferences.Editor = pref.edit()
-                editor.clear()
-                editor.apply()
-                val intent = Intent(requireContext(), LoadingActivity::class.java)
-                startActivity(intent)
-                true
-            }
-            R.id.action_settings ->{
-                var bundle = Bundle()
-                Navigation.findNavController(requireView()).navigate(R.id.navigate_to_settings_fragment, bundle)
-            }
-            R.id.action_invitation->{
-                val target = ListProductFragmentDirections.actionNavListproductToNavInvitationCreate()
-                Navigation.findNavController(requireView()).navigate(target)
-            }
-            R.id.action_search->{
-                Navigation.findNavController(requireView()).navigate(R.id.navigate_to_vacances_fragment)
-            }
-
-            else -> true
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
     inner class ActionModeCallback : ActionMode.Callback {
         private var shouldResetRecyclerView = true
         override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
-            val service  = retrofit("https://foodlog.min.epf.fr/").create(ProductService::class.java)
+            val service = retrofit("https://foodlog.min.epf.fr/").create(ProductService::class.java)
             val pref = requireActivity().getApplicationContext().getSharedPreferences(
                 "Foodlog",
                 Context.MODE_PRIVATE
             )
             val token = pref.getString("token", null);
-            val fridge=pref.getInt("fridge",0);
-            //runBlocking {
-                //service.deleteProduct("${token}",fridge, 48)
-            //}
+            val fridge = pref.getInt("fridge", 0)
             when (item?.getItemId()) {
 
                 R.id.action_delete -> {
@@ -239,31 +227,13 @@ class ListProductFragment : Fragment(), ProductInterface {
                     Log.d("EPF", "${adap?.selectedIds}")
                     //adap?.deleteSelectedIds()
                     val selectedIdIteration = adap?.selectedIds?.listIterator();
-                    adap?.selectedIds?.map{runBlocking {
-                        service.deleteProduct("${token}",fridge, it)
-                    }}
-                    //while (selectedIdIteration!!.hasNext()) {
-                    Log.d("1", "${adap?.selectedIds}")
-                    //adap?.selectedIds?.map
-                    //val selectedItemID = selectedIdIteration?.next()
-                    //var indexOfModelList = 0
+                    adap?.selectedIds?.map {
+                        runBlocking {
+                            service.deleteProduct("${token}", fridge, it)
+                        }
+                    }
 
-                    //val modelListIteration = adap?.modelList?.listIterator();
-                    //while (modelListIteration!!.hasNext()) {
-                    //Log.d("2", "${adap?.selectedIds}")
-                    //val model = modelListIteration.next()
-                    //if (selectedItemID.equals(model.id)) {
-                    //runBlocking {
-                    //service.deleteProduct("${token}", selectedItemID )
-                    //}
-                    //Log.d("3", "${adap?.selectedIds}")
-                    //modelListIteration.remove()
-                    //selectedIdIteration.remove()
-                    //notifyItemRemoved(indexOfModelList)
-                    //}
-                    //indexOfModelList++
-                    //}
-                    isMultiSelectOn = false
+                    ListProductFragment.isMultiSelectOn = false
 
                     adap?.selectedIds?.clear()
                     adap?.notifyDataSetChanged()
@@ -278,7 +248,6 @@ class ListProductFragment : Fragment(), ProductInterface {
             }
             return false
         }
-
         override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
             val inflater = mode?.getMenuInflater()
             inflater?.inflate(R.menu.detail_product, menu)
@@ -296,9 +265,12 @@ class ListProductFragment : Fragment(), ProductInterface {
                 adap?.selectedIds?.clear()
                 adap?.notifyDataSetChanged()
             }
-            isMultiSelectOn = false
+            ListProductFragment.isMultiSelectOn = false
             actionMode = null
             shouldResetRecyclerView = true
         }
     }
+
+
+
 }

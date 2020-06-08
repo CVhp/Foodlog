@@ -6,10 +6,17 @@
 
     <item
         android:id="@+id/action_invitation"
-        android:icon="@android:drawable/ic_dialog_email"
+        android:icon="@drawable/ic_mail"
         android:title="Invitation"
-        android:iconTint="#0A0E0A"
+        android:iconTint="#FFFFFF"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_search"
+        android:icon="@drawable/ic_search"
+        android:title="Invitation"
+        android:iconTint="#FFFFFF"
+        app:showAsAction="ifRoom" />
+
     <item
         android:id="@+id/action_settings"
         android:title="@string/action_settings"

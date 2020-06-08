@@ -1,12 +1,11 @@
 package fr.epf.foodlog.ui.invitation
 
+import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,6 +18,8 @@ import fr.epf.foodlog.model.Product
 import fr.epf.foodlog.service.Invitations
 import fr.epf.foodlog.service.ProductService
 import fr.epf.foodlog.service.retrofit
+import fr.epf.foodlog.ui.ListProduct.ListProductFragmentDirections
+import fr.epf.foodlog.ui.Options.DetailsProductFragmentDirections
 import fr.epf.foodlog.ui.fridge.AddFridgeFragmentDirections
 import fr.epf.foodlog.ui.fridge.FridgeFragmentAdapter
 import fr.epf.foodlog.ui.fridge.FridgeFragmentDirections
@@ -63,9 +64,14 @@ class InvitationFragment : Fragment() {
         val token = pref.getString("token", null);
         invitations= arrayListOf()
         runBlocking {
-            val result=service.getInvitations(token!!)
+            val result= service.getInvitations(token!!)
             result.invitations.map{
                 invitations.add(it)
+            }
+            if (invitations.isEmpty()){
+                root.text_no_invit.visibility = View.VISIBLE
+            } else {
+                root.text_no_invit.visibility = View.GONE
             }
             recyclerView.adapter  = InvitationFragmentAdapter(invitations.toList())
         }
@@ -73,4 +79,23 @@ class InvitationFragment : Fragment() {
         return root
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        setHasOptionsMenu(true)
+        super.onCreate(savedInstanceState)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.invitations_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId){
+            R.id.action_invitation -> {
+                val target = ListProductFragmentDirections.actionNavListproductToNavInvitationCreate()
+                Navigation.findNavController(requireView()).navigate(target)
+                true
+            }
+            else -> false
+        }
+    }
 }

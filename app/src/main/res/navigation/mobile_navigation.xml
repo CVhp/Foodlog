@@ -27,6 +27,10 @@
             android:id="@+id/navigate_to_recette_fragment"
             app:destination="@id/nav_recipe"/>
 
+        <action
+        android:id="@+id/navigate_to_vacances_fragment"
+        app:destination="@id/nav_vacances"/>
+
         <argument
             android:name="fridge"
             app:argType="integer"
@@ -43,6 +47,17 @@
         android:name="fr.epf.foodlog.ui.Options.AddProductFragment"
         android:label="@string/menu_addProduct"
         tools:layout="@layout/fragment_add_product" >
+        <action
+            android:id="@+id/return_to_listProduct_fragment"
+            app:destination="@id/nav_listproduct"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_vacances"
+        android:name="fr.epf.foodlog.ui.Options.VacancesFragment"
+        android:label="Voyage"
+        tools:layout="@layout/fragment_vacances" >
+
         <action
             android:id="@+id/return_to_listProduct_fragment"
             app:destination="@id/nav_listproduct"/>
@@ -132,6 +147,9 @@
         <action
             android:id="@+id/action_nav_invitation_to_invitationDetails"
             app:destination="@id/invitationDetails3" />
+        <action
+            android:id="@+id/action_nav_listproduct_to_nav_invitation_create"
+            app:destination="@id/nav_invitation_create" />
     </fragment>
     <fragment
         android:id="@+id/nav_invitation_create"
