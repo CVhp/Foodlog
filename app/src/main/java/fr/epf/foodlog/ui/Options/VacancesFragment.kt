@@ -41,7 +41,7 @@ class VacancesFragment : Fragment(), ProductInterface {
 
     //ListeProductAffichée
 
-    //ListeProductCopy
+     var ListeProductCopy : MutableList<Product> = arrayListOf()
 
     override fun productInterface(size: Int) {
         if (actionMode == null) actionMode = requireActivity().startActionMode(ActionModeCallback())
@@ -131,13 +131,23 @@ class VacancesFragment : Fragment(), ProductInterface {
 
             override fun afterTextChanged(s: Editable) {
 
-                //date max = Date.parse(s.toString())
-                //filtrer ici
+                if(ListeProductCopy.size<1){
+                    ListeProductCopy.addAll(Product.all)
+                }
+
+                val dateMax = LocalDate.parse(s.toString())
+                Product.all.clear()
+                ListeProductCopy.map {
+                    if(it.date.isAfter(dateMax)){
+                        Product.all.add(it)
+                    }
+                }
+                adap?.notifyDataSetChanged()
             }
         })
 
-        // Avoir initialisé ListeCopy.addAll(ListeProduct)
-        /*filter ListAffichée.clear()
+        // Avoir initialisé ListeCopy.addAll(ListeProduct) juste après avoir tout téléchargé
+        /*filtre: ListAffichée.clear()
 //       ListCopy.map{->product
 
 if(product.date.isAfter(date max){
@@ -226,6 +236,7 @@ adap.notifyDataSetChanged();
 
                 runBlocking {
                     productDao.addProduct(product)
+                    //ListeProductCopy.add(product)
                 }
 
                 Log.d("Produit: ", "$name $type $date")
