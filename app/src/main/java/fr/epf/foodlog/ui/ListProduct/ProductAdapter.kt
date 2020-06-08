@@ -42,6 +42,8 @@ class ProductAdapter(val context: Context, val productInterface: ProductInterfac
 
     var msg:Boolean = false
     lateinit var view : View
+    val currendate =""
+
 
     override fun onLongTap(index: Int) {
         if (!ListProductFragment.isMultiSelectOn) {

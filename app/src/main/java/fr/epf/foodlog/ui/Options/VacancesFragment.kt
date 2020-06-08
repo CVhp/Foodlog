@@ -5,15 +5,15 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.*
-import androidx.fragment.app.Fragment
 import androidx.annotation.RequiresApi
-import androidx.navigation.Navigation
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import fr.epf.foodlog.ListProduct.ProductAdapter
 import fr.epf.foodlog.ListProduct.ProductInterface
 import fr.epf.foodlog.R
@@ -25,7 +25,6 @@ import fr.epf.foodlog.model.UnityProduct
 import fr.epf.foodlog.service.ProductService
 import fr.epf.foodlog.service.retrofit
 import fr.epf.foodlog.ui.ListProduct.ListProductFragment
-import fr.epf.foodlog.ui.ListProduct.ListProductFragmentArgs
 import kotlinx.android.synthetic.main.fragment_add_product.view.*
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
@@ -40,11 +39,16 @@ class VacancesFragment : Fragment(), ProductInterface {
     var actionMode: ActionMode? = null
     var adap: ProductAdapter? = null
 
+    //ListeProductAffichée
+
+    //ListeProductCopy
+
     override fun productInterface(size: Int) {
         if (actionMode == null) actionMode = requireActivity().startActionMode(ActionModeCallback())
         if (size > 0) actionMode?.setTitle("$size")
         else actionMode?.finish()
     }
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -67,6 +71,8 @@ class VacancesFragment : Fragment(), ProductInterface {
             } else if (fridge == 0) {
                 fridge = pref.getInt("fridge", 0)
             }
+
+
 
 
         // Inflate the layout for this fragment
@@ -104,8 +110,43 @@ class VacancesFragment : Fragment(), ProductInterface {
                 }
                 val date = "$year-$date_month-$date_day"
                 root.tvDate.text = date
-
             }
+
+        root.tvDate.addTextChangedListener(object : TextWatcher {
+            override fun onTextChanged(
+                s: CharSequence,
+                start: Int,
+                before: Int,
+                count: Int
+            ) {
+                // TODO Auto-generated method stub
+            }
+
+            override fun beforeTextChanged(
+                s: CharSequence, start: Int, count: Int,
+                after: Int
+            ) {
+                // TODO Auto-generated method stub
+            }
+
+            override fun afterTextChanged(s: Editable) {
+
+                //date max = Date.parse(s.toString())
+                //filtrer ici
+            }
+        })
+
+        // Avoir initialisé ListeCopy.addAll(ListeProduct)
+        /*filter ListAffichée.clear()
+//       ListCopy.map{->product
+
+if(product.date.isAfter(date max){
+ListAffichée.add(product)
+}
+}
+adap.notifyDataSetChanged();
+
+*/
 
         requireActivity().runOnUiThread (Runnable {
 
@@ -116,8 +157,7 @@ class VacancesFragment : Fragment(), ProductInterface {
 
             products_recyclerview.layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-            products_recyclerview.adapter =
-                adap
+            products_recyclerview.adapter =   adap
 
             Product.all.clear()
             getServer()
@@ -177,7 +217,6 @@ class VacancesFragment : Fragment(), ProductInterface {
                 if (uri == null){
                     uri = "null"
                 }
-
 
                 Product.all.add(Product(id, name, typeCategory, LocalDate.parse(date),stock.toDouble(),typeUnite, nutriscore, uri))
 
@@ -265,7 +304,8 @@ class VacancesFragment : Fragment(), ProductInterface {
             actionMode = null
             shouldResetRecyclerView = true
         }
-    }
+
+      }
 
 
 
