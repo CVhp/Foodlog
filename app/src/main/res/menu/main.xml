@@ -3,15 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
-    <item
-        android:id="@+id/action_recette"
-        android:icon="@drawable/ic_search_black_24dp"
-        android:title="Recette"
-        app:showAsAction="ifRoom" />
+
     <item
         android:id="@+id/action_invitation"
         android:icon="@android:drawable/ic_dialog_email"
         android:title="Invitation"
+        android:iconTint="#0A0E0A"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_settings"

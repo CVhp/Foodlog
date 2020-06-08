@@ -26,21 +26,42 @@ class DetailsRecipeFragment : Fragment() {
         val ingredients = requireArguments().getStringArray("ingredients")
         val steps = requireArguments().getStringArray("steps")
 
+        val Nametimes = time!!.split("/")
+        var cuisson = Nametimes[0].split(":")
+        var prep = Nametimes[1].split(":")
+        var tot = Nametimes[2].split(":")
+
+        var tempsCuisson = cuisson[1]
+        var tempsPrep = prep[1]
+        var tempsTot = tot[1]
+
         root.name_view.text = name
         root.rate_view.text = rate
-        root.time_view.text = time
+        root.tempsCuisson_view.text = tempsCuisson
+        root.tempsPrep_view.text = tempsPrep
+        root.tempsTot_view.text = tempsTot
         root.tags_view.text = tags
         root.difficulty_view.text = difficulty
 
         var display_ingredients = ""
         ingredients!!.forEach {
-            display_ingredients = display_ingredients + "\n" + it
+            if(display_ingredients != ""){
+                display_ingredients = display_ingredients + "\n" + " - " + it
+            }
+            else{
+                display_ingredients = " - " + it
+            }
         }
         root.ingredient_view.text = display_ingredients
 
         var display_steps = ""
         steps!!.forEach {
-            display_steps = display_steps + "\n" + it
+            if(display_steps != ""){
+                display_steps = display_steps + "\n" + " - " + it
+            }
+            else{
+                display_steps = " - " + it
+            }
         }
         root.steps_view.text = display_steps
 

@@ -6,7 +6,7 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_listproduct"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_liste_produits"
             android:title="@string/menu_listProduct" />
 
         <item
@@ -15,9 +15,10 @@
             android:title="Frigos" />
 
         <item
-            android:id="@+id/nav_shoppinglist"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="@string/menu_shoppingList" />
+            android:id="@+id/nav_recipe"
+            android:icon="@drawable/ic_recipe"
+            android:title="@string/menu_recette" />
+
         <item
             android:id="@+id/nav_invitation"
             android:icon="@drawable/ic_menu_invitation"

@@ -8,7 +8,7 @@
 
     <style name="AppTheme2" parent="Theme.AppCompat.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimary">#FF669900</item>
         <item name="colorPrimaryDark">#FF669900</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>

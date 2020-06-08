@@ -15,13 +15,22 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <!--     NOM       -->
             <TextView
                 android:id="@+id/name_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
+                android:gravity="center"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textColor="#000000"
+                android:background="@color/lightGreen"
+                android:layout_marginTop="10dp"
+                android:textSize="20dp"
+                android:textStyle="bold"
                 android:text="Titre de la recette" />
 
+            <!--     NOTE       -->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -32,7 +41,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
-                    android:text="Note : " />
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/ic_star" />
 
                 <TextView
                     android:id="@+id/rate_view"
@@ -43,34 +53,9 @@
 
             </RelativeLayout>
 
-            <TextView
-                android:id="@+id/time_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:text="Temps" />
-
+            <!--     DIFFICULTÉ       -->
             <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/tags_textView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:text="Tags : " />
-
-                <TextView
-                    android:id="@+id/tags_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/tags_textView"
-                    android:text="tags" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
+                android:layout_marginTop="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -78,6 +63,8 @@
                     android:id="@+id/difficulty_textView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textSize="15dp"
                     android:layout_marginLeft="5dp"
                     android:text="Difficulté : " />
 
@@ -90,7 +77,32 @@
 
             </RelativeLayout>
 
+            <!--     TAGS       -->
             <RelativeLayout
+                android:layout_marginTop="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tags_textView"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:background="@drawable/ic_tags"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="5dp" />
+
+                <TextView
+                    android:id="@+id/tags_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/tags_textView"
+                    android:text="tags" />
+
+            </RelativeLayout>
+
+            <!--     BUDGET       -->
+            <RelativeLayout
+                android:layout_marginTop="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -98,8 +110,9 @@
                     android:id="@+id/budget_textView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:text="Budget : " />
+                    android:background="@drawable/ic_money"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="5dp" />
 
                 <TextView
                     android:id="@+id/budget_view"
@@ -110,7 +123,9 @@
 
             </RelativeLayout>
 
+            <!--     NB PERSONNE       -->
             <RelativeLayout
+                android:layout_marginTop="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -118,8 +133,9 @@
                     android:id="@+id/quantity_textView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:text="Nombre de personnes : " />
+                    android:background="@drawable/ic_people"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="5dp" />
 
                 <TextView
                     android:id="@+id/quantity_view"
@@ -130,12 +146,112 @@
 
             </RelativeLayout>
 
+            <!--     TEMPS       -->
+            <TextView
+                android:layout_marginTop="15dp"
+                android:textStyle="bold"
+                android:textSize="15dp"
+                android:background="@color/colorControlActivated"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:text="Temps :" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tempsCuisson_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:text="Cuissons : "
+                    android:textSize="15dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tempsCuisson_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/tempsCuisson_textView"
+                    android:text="time" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tempsPrep_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:text="Préparation : "
+                    android:textSize="15dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tempsPrep_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/tempsPrep_textView"
+                    android:text="time" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tempsTot_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:text="Total : "
+                    android:textSize="15dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tempsTot_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/tempsTot_textView"
+                    android:text="time" />
+            </RelativeLayout>
+
+            <!--     INGREDIENTS       -->
+            <TextView
+                android:layout_marginTop="15dp"
+                android:textStyle="bold"
+                android:textSize="15dp"
+                android:background="@color/colorControlActivated"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:layout_marginLeft="5dp"
+                android:text="Ingredients :" />
+
             <TextView
                 android:id="@+id/ingredient_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:text="Ingredients" />
+
+            <!--     STEP       -->
+
+            <TextView
+                android:layout_marginTop="15dp"
+                android:textStyle="bold"
+                android:textSize="15dp"
+                android:background="@color/colorControlActivated"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:layout_marginLeft="5dp"
+                android:text="Etapes :" />
 
             <TextView
                 android:id="@+id/steps_view"
