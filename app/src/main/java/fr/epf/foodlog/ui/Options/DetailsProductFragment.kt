@@ -31,13 +31,9 @@ import kotlinx.android.synthetic.main.fragment_details_product.view.*
 import kotlinx.android.synthetic.main.stock_dialog.view.*
 import kotlinx.coroutines.runBlocking
 import net.simplifiedcoding.imageuploader.UploadRequestBody
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -79,17 +75,35 @@ class DetailsProductFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         root = inflater.inflate(R.layout.fragment_details_product, container, false)
-
+        val button = root.findViewById<Button>(R.id.modifier)
         root.product_imageView_details.setOnClickListener {
-            if(ContextCompat.checkSelfPermission(requireContext(),android.Manifest.permission.READ_EXTERNAL_STORAGE) ==
+            if(ContextCompat.checkSelfPermission(requireContext(),android.Manifest.permission.CAMERA) ==
                 PackageManager.PERMISSION_DENIED){
-                val permissions = arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE);
-                requestPermissions(permissions, PERMISSION_CODE);
+                var permissions = arrayOf(android.Manifest.permission.CAMERA);
+                requestPermissions(permissions, REQUEST_TAKE_PHOTO);
+
+                if(ContextCompat.checkSelfPermission(requireContext(),android.Manifest.permission.READ_EXTERNAL_STORAGE) ==
+                    PackageManager.PERMISSION_DENIED){
+                     permissions = arrayOf(android.Manifest.permission.CAMERA);
+                    requestPermissions(permissions, PERMISSION_CODE)
+                    takePicture()
+                    button.setVisibility(View.VISIBLE);
+                }else{
+                    takePicture()
+                    button.setVisibility(View.VISIBLE);
+                }
+
             }
             else {
                 takePicture()
+                button.setVisibility(View.VISIBLE);
             }
         }
+        val pref = appContext.getSharedPreferences(
+            "Foodlog",
+            Context.MODE_PRIVATE
+        )
+       val profile=pref.getInt("profile",0)
 
         id2 = requireArguments().getInt("id")
 
@@ -164,7 +178,7 @@ class DetailsProductFragment : Fragment() {
         val spinner = root.findViewById<Spinner>(R.id.type_spinner)
         val textViewType = root.findViewById<TextView>(R.id.details_sexe)
 
-        val button = root.findViewById<Button>(R.id.modifier)
+
 
         val dateP = root.findViewById<TextView>(R.id.details_actif)
         val dateM = root.findViewById<TextView>(R.id.DetailDate)
@@ -175,153 +189,157 @@ class DetailsProductFragment : Fragment() {
         val textViewStock = root.findViewById<TextView>(R.id.details_stock)
         val modifStock = root.findViewById<TextView>(R.id.edit_stock)
 
-        textViewNom.setOnLongClickListener {
-            textViewNom.setVisibility(View.GONE);
-            editText.setVisibility(View.VISIBLE);
-            if(button.visibility==View.GONE)
-                button.setVisibility(View.VISIBLE);
-            true
-        }
+        if(profile>1) {
 
-        textViewType.setOnLongClickListener {
-            textViewType.setVisibility(View.GONE);
-            spinner.setVisibility(View.VISIBLE);
-            if(button.visibility==View.GONE)
-                button.setVisibility(View.VISIBLE);
-            true
-        }
+            textViewNom.setOnLongClickListener {
+                textViewNom.setVisibility(View.GONE);
+                editText.setVisibility(View.VISIBLE);
+                if (button.visibility == View.GONE)
+                    button.setVisibility(View.VISIBLE);
+                true
+            }
 
-        dateP.setOnLongClickListener {
-            dateP.setVisibility(View.GONE);
-            dateM.setVisibility(View.VISIBLE);
+            textViewType.setOnLongClickListener {
+                textViewType.setVisibility(View.GONE);
+                spinner.setVisibility(View.VISIBLE);
+                if (button.visibility == View.GONE)
+                    button.setVisibility(View.VISIBLE);
+                true
+            }
 
-            //                      DATEPICKER
-            dateM.setOnClickListener(View.OnClickListener {
-                val cal: Calendar = Calendar.getInstance()
-                val year: Int = cal.get(Calendar.YEAR)
-                val month: Int = cal.get(Calendar.MONTH)
-                val day: Int = cal.get(Calendar.DAY_OF_MONTH)
-                val dialog = DatePickerDialog(
-                    requireContext(),
-                    mDateSetListener,
-                    year, month, day
-                )
-                dialog.show()
-            })
+            dateP.setOnLongClickListener {
+                dateP.setVisibility(View.GONE);
+                dateM.setVisibility(View.VISIBLE);
 
-            mDateSetListener =
-                DatePickerDialog.OnDateSetListener { datePicker, year, month, day ->
-                    var month = month
-                    var date_month : String = ""
-                    var date_day : String = ""
-                    month = month + 1
-                    if ("${month}".length == 1){
-                        date_month = "0$month"
-                    } else {
-                        date_month = "$month"
+                //                      DATEPICKER
+                dateM.setOnClickListener(View.OnClickListener {
+                    val cal: Calendar = Calendar.getInstance()
+                    val year: Int = cal.get(Calendar.YEAR)
+                    val month: Int = cal.get(Calendar.MONTH)
+                    val day: Int = cal.get(Calendar.DAY_OF_MONTH)
+                    val dialog = DatePickerDialog(
+                        requireContext(),
+                        mDateSetListener,
+                        year, month, day
+                    )
+                    dialog.show()
+                })
+
+                mDateSetListener =
+                    DatePickerDialog.OnDateSetListener { datePicker, year, month, day ->
+                        var month = month
+                        var date_month: String = ""
+                        var date_day: String = ""
+                        month = month + 1
+                        if ("${month}".length == 1) {
+                            date_month = "0$month"
+                        } else {
+                            date_month = "$month"
+                        }
+
+                        if ("${day}".length == 1) {
+                            date_day = "0$day"
+                        } else {
+                            date_day = "$day"
+                        }
+                        val date = "$year-$date_month-$date_day"
+                        dateM.text = date
+
                     }
 
-                    if ("${day}".length == 1){
-                        date_day = "0$day"
-                    } else {
-                        date_day = "$day"
+                if (button.visibility == View.GONE)
+                    button.setVisibility(View.VISIBLE);
+                true
+            }
+
+            textViewUnite.setOnLongClickListener {
+                textViewUnite.setVisibility(View.GONE)
+                spinnerUnite.setVisibility(View.VISIBLE)
+                if (button.visibility == View.GONE)
+                    button.setVisibility(View.VISIBLE)
+                true
+            }
+
+            textViewStock.setOnLongClickListener {
+                textViewStock.setVisibility(View.GONE)
+                modifStock.setVisibility(View.VISIBLE)
+                if (button.visibility == View.GONE)
+                    button.setVisibility(View.VISIBLE)
+                true
+            }
+
+            root.edit_stock.setOnClickListener {
+                if (spinnerUnite.visibility == View.VISIBLE) {
+                    unite = spinnerUnite.selectedItem as String
+                } else {
+                    unite = textViewUnite.text.toString()
+                }
+
+
+                val mDialogView =
+                    LayoutInflater.from(requireContext()).inflate(R.layout.stock_dialog, null)
+                // Set a SeekBar change listener
+                mDialogView.seekBar.setOnSeekBarChangeListener(object :
+                    SeekBar.OnSeekBarChangeListener {
+                    override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
+                        // Display the current progress of SeekBar
+                        mDialogView.text_view_seekbar.text = "$i"
                     }
-                    val date = "$year-$date_month-$date_day"
-                    dateM.text = date
+
+                    override fun onStartTrackingTouch(seekBar: SeekBar) {
+                        // Do something
+                        appContext = requireActivity().getApplicationContext()
+                        Toast.makeText(appContext, "start tracking", Toast.LENGTH_SHORT).show()
+                    }
+
+                    override fun onStopTrackingTouch(seekBar: SeekBar) {
+                        // Do something
+                        appContext = requireActivity().getApplicationContext()
+                        Toast.makeText(appContext, "stop tracking", Toast.LENGTH_SHORT).show()
+                    }
+                })
+
+                // Set le input stock
+                if (unite == "portions") {
+                    mDialogView.seekBar.setVisibility(View.VISIBLE);
+                    mDialogView.text_view_seekbar.setVisibility(View.VISIBLE);
+                    mDialogView.product_dialog_unite.setText("portions")
+                    NumUnite = 2
+                } else {
+                    mDialogView.stock_edittext.setVisibility(View.VISIBLE);
+                    mDialogView.product_dialog_unite.setText("grammes")
+                    NumUnite = 1
+                }
+                //AlertDialogBuilder
+                val mBuilder = android.app.AlertDialog.Builder(requireContext())
+                    .setView(mDialogView)
+                    .setTitle("Ajout de la quantité")
+                //show dialog
+                val mAlertDialog = mBuilder.show()
+                //add button click of custom layout
+                mDialogView.dialogValiderBtn.setOnClickListener {
+                    //dismiss dialog
+                    mAlertDialog.dismiss()
+                    //get text from EditTexts of custom layout
+                    if (unite == "portions") {
+                        stock = mDialogView.text_view_seekbar.text.toString()
+                    } else {
+                        stock = mDialogView.stock_edittext.text.toString()
+
+                    }
+                    //set the input text in TextView
+                    if (stock != "" || stock != "- -")
+                        edit_stock.setText(stock)
+                    else
+                        edit_stock.setText("Entrez la quantité")
 
                 }
 
-            if(button.visibility==View.GONE)
-                button.setVisibility(View.VISIBLE);
-            true
-        }
-
-        textViewUnite.setOnLongClickListener {
-            textViewUnite.setVisibility(View.GONE)
-            spinnerUnite.setVisibility(View.VISIBLE)
-            if(button.visibility==View.GONE)
-                button.setVisibility(View.VISIBLE)
-            true
-        }
-
-        textViewStock.setOnLongClickListener {
-            textViewStock.setVisibility(View.GONE)
-            modifStock.setVisibility(View.VISIBLE)
-            if(button.visibility==View.GONE)
-                button.setVisibility(View.VISIBLE)
-            true
-        }
-
-        root.edit_stock.setOnClickListener {
-            if (spinnerUnite.visibility==View.VISIBLE) {
-                unite = spinnerUnite.selectedItem as String
-            } else {
-                unite = textViewUnite.text.toString()
-            }
-
-            val mDialogView = LayoutInflater.from(requireContext()).inflate(R.layout.stock_dialog, null)
-            // Set a SeekBar change listener
-            mDialogView.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
-                    // Display the current progress of SeekBar
-                    mDialogView.text_view_seekbar.text = "$i"
+                //cancel button click of custom layout
+                mDialogView.dialogCancelBtn.setOnClickListener {
+                    //dismiss dialog
+                    mAlertDialog.dismiss()
                 }
-
-                override fun onStartTrackingTouch(seekBar: SeekBar) {
-                    // Do something
-                    appContext = requireActivity().getApplicationContext()
-                    Toast.makeText(appContext,"start tracking",Toast.LENGTH_SHORT).show()
-                }
-
-                override fun onStopTrackingTouch(seekBar: SeekBar) {
-                    // Do something
-                    appContext = requireActivity().getApplicationContext()
-                    Toast.makeText(appContext,"stop tracking",Toast.LENGTH_SHORT).show()
-                }
-            })
-
-            // Set le input stock
-            if ( unite=="portions"){
-                mDialogView.seekBar.setVisibility(View.VISIBLE);
-                mDialogView.text_view_seekbar.setVisibility(View.VISIBLE);
-                mDialogView.product_dialog_unite.setText("portions")
-                NumUnite = 2
-            }
-            else {
-                mDialogView.stock_edittext.setVisibility(View.VISIBLE);
-                mDialogView.product_dialog_unite.setText("grammes")
-                NumUnite = 1
-            }
-            //AlertDialogBuilder
-            val mBuilder = android.app.AlertDialog.Builder(requireContext())
-                .setView(mDialogView)
-                .setTitle("Ajout de la quantité")
-            //show dialog
-            val  mAlertDialog = mBuilder.show()
-            //add button click of custom layout
-            mDialogView.dialogValiderBtn.setOnClickListener {
-                //dismiss dialog
-                mAlertDialog.dismiss()
-                //get text from EditTexts of custom layout
-                if (unite=="portions"){
-                    stock = mDialogView.text_view_seekbar.text.toString()
-                }
-                else {
-                    stock = mDialogView.stock_edittext.text.toString()
-
-                }
-                //set the input text in TextView
-                if(stock!="" || stock!="- -")
-                    edit_stock.setText(stock)
-                else
-                    edit_stock.setText("Entrez la quantité")
-
-            }
-
-            //cancel button click of custom layout
-            mDialogView.dialogCancelBtn.setOnClickListener {
-                //dismiss dialog
-                mAlertDialog.dismiss()
             }
         }
 
@@ -392,11 +410,14 @@ class DetailsProductFragment : Fragment() {
             Log.d("envoi", "${uniteVraie}")
 
             getServer(name, typeProduct.toString(), nvdate.toString(), stock, uniteVraie)
-            uploadImage()
-            val pref = appContext.getSharedPreferences(
-                "Foodlog",
-                Context.MODE_PRIVATE
-            )
+
+            if(selectedImageUri!=null){
+                uploadImage()
+            }
+
+
+
+
             val fridge = pref.getInt("fridge", 0);
             val target=DetailsProductFragmentDirections.returnToListProductFragment(fridge)
             Navigation.findNavController(requireView()).navigate(target);
@@ -500,7 +521,7 @@ class DetailsProductFragment : Fragment() {
     private fun uploadImage() {
         if (selectedImageUri == null) {
             // layout_root.snackbar("Select an Image First")
-            //  return
+            // return
         }
 
         val parcelFileDescriptor =  requireContext().contentResolver.openFileDescriptor(selectedImageUri!!, "r", null)

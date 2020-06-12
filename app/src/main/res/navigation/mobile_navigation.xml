@@ -119,8 +119,8 @@
     <fragment
         android:id="@+id/addFridgeFragment"
         android:name="fr.epf.foodlog.ui.fridge.AddFridgeFragment"
-        android:label="fragment_add_fridge"
-        tools:layout="@layout/fragment_add_fridge" >
+        android:label="Ajouter un frigo"
+        tools:layout="@layout/fragment_add_fridge">
         <action
             android:id="@+id/action_addFridgeFragment_to_fridgeFragment"
             app:destination="@id/nav_listfrigo" />

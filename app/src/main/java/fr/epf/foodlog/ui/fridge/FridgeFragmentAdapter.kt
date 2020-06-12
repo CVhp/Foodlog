@@ -1,6 +1,7 @@
 package fr.epf.foodlog.ui.fridge
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +12,7 @@ import fr.epf.foodlog.service.Fridge
 import kotlinx.android.synthetic.main.fridge_view.view.*
 
 
-class FridgeFragmentAdapter (val fridges:List<Fridge>) : RecyclerView.Adapter<FridgeFragmentAdapter.FridgeViewHolder>(){
+class FridgeFragmentAdapter (val context: Context,val fridges:List<Fridge>) : RecyclerView.Adapter<FridgeFragmentAdapter.FridgeViewHolder>(){
     class FridgeViewHolder(val fridgeview: View):RecyclerView.ViewHolder(fridgeview)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FridgeViewHolder {
@@ -30,6 +31,18 @@ class FridgeFragmentAdapter (val fridges:List<Fridge>) : RecyclerView.Adapter<Fr
 
           val target = FridgeFragmentDirections.actionFridgeFragmentToNavListproduct(id)
             Navigation.findNavController(holder.fridgeview).navigate(target)
+
+            val appContext = context
+            val pref = appContext.getSharedPreferences(
+                "Foodlog",
+                Context.MODE_PRIVATE
+            )
+            val editor: SharedPreferences.Editor = pref.edit()
+            editor.putInt(
+                "profile",
+                fridge.profile
+            );
+            editor.apply()
 
         }
     }

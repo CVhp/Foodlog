@@ -32,8 +32,8 @@ class FridgeFragment : Fragment() {
         val fridge=pref.getInt("fridge",0)
         if(fridge!=0){
             Log.d("Fridge",fridge.toString())
-                //val target=FridgeFragmentDirections.actionFridgeFragmentToNavListproduct(fridge)
-                //Navigation.findNavController(requireView()).navigate(target)
+            //    val target=FridgeFragmentDirections.actionFridgeFragmentToNavListproduct(fridge)
+             //   Navigation.findNavController(requireView()).navigate(target)
         }
         super.onStart()
     }
@@ -66,7 +66,7 @@ class FridgeFragment : Fragment() {
         runBlocking {
             val result=service.getFridges(token!!)
             Log.d("test", "${result.fridge}")
-            recyclerView.adapter=FridgeFragmentAdapter(result.fridge)
+            recyclerView.adapter=FridgeFragmentAdapter(requireContext(),result.fridge)
         }
         return root
     }

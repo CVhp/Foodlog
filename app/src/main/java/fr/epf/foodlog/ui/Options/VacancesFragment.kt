@@ -138,7 +138,7 @@ class VacancesFragment : Fragment(), ProductInterface {
                 val dateMax = LocalDate.parse(s.toString())
                 Product.all.clear()
                 ListeProductCopy.map {
-                    if(it.date.isAfter(dateMax)){
+                    if(it.date.isBefore(dateMax)){
                         Product.all.add(it)
                     }
                 }

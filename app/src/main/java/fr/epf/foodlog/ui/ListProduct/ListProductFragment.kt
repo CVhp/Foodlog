@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.*
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,6 +27,7 @@ import fr.epf.foodlog.model.Product
 import fr.epf.foodlog.model.UnityProduct
 import fr.epf.foodlog.service.ProductService
 import fr.epf.foodlog.service.retrofit
+import kotlinx.android.synthetic.main.fragment_list_product.view.*
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 
@@ -35,6 +37,7 @@ class ListProductFragment : Fragment(), ProductInterface {
     var actionMode: ActionMode? = null
     private var fridge=0
     lateinit var products_recyclerview : RecyclerView
+    private var profile =0
 
     companion object {
         var isMultiSelectOn = false
@@ -72,10 +75,14 @@ class ListProductFragment : Fragment(), ProductInterface {
             } else if (fridge == 0) {
                 fridge = pref.getInt("fridge", 0)
             }
+             profile = pref.getInt("profile",0)
         }
 
         val root = inflater.inflate(R.layout.fragment_list_product, container, false)
 
+
+        root.fab.isEnabled= (profile >= 4)
+        root.fab.isVisible= (profile >= 4)
         requireActivity().runOnUiThread (Runnable {
 
             products_recyclerview = root.findViewById<View>(R.id.products_recyclerview) as RecyclerView
@@ -188,6 +195,10 @@ class ListProductFragment : Fragment(), ProductInterface {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.main, menu)
+        if(profile<10){
+            menu.findItem(R.id.action_invitation).isVisible=false
+            menu.findItem(R.id.action_invitation).isEnabled=false
+        }
         super.onCreateOptionsMenu(menu, inflater)
     }
 
