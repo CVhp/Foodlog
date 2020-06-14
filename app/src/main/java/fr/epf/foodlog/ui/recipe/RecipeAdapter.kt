@@ -53,7 +53,9 @@ class RecipeAdapter (val context: Context, val recipes: List<Recette>) : Recycle
                 "time" to recipe.time,
                 "tags" to tags[1],
                 "difficulty" to recipe.difficulty,
+                "budget" to recipe.budget,
                 "ingredients" to recipe.ingredients,
+                "people_quantity" to recipe.people_quantity,
                 "steps" to recipe.steps)
             Navigation.findNavController(it)
                 .navigate(R.id.navigate_to_detailRecipe_fragment, bundle);

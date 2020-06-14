@@ -1,22 +1,15 @@
 package fr.epf.foodlog.LoadingActivities
 
-import android.app.AlarmManager
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import fr.epf.foodlog.ui.Common.Common
 import fr.epf.foodlog.R
 import fr.epf.foodlog.model.ClientAuth
-import fr.epf.foodlog.service.UserService
-import fr.epf.foodlog.service.retrofit
 import fr.epf.foodlogsprint.remote.ClientAPI
 import kotlinx.android.synthetic.main.activity_sign_up.*
-import kotlinx.coroutines.runBlocking
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

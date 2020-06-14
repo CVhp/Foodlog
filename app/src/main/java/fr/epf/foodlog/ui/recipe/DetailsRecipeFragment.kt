@@ -23,6 +23,8 @@ class DetailsRecipeFragment : Fragment() {
         val time = requireArguments().getString("time")
         val tags = requireArguments().getString("tags")
         val difficulty = requireArguments().getString("difficulty")
+        val budget = requireArguments().getString("budget")
+        val people = requireArguments().getString("people_quantity")
         val ingredients = requireArguments().getStringArray("ingredients")
         val steps = requireArguments().getStringArray("steps")
 
@@ -42,6 +44,8 @@ class DetailsRecipeFragment : Fragment() {
         root.tempsTot_view.text = tempsTot
         root.tags_view.text = tags
         root.difficulty_view.text = difficulty
+        root.budget_view.text = budget
+        root.quantity_view.text = people
 
         var display_ingredients = ""
         ingredients!!.forEach {

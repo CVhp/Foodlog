@@ -17,5 +17,7 @@ data class Recette(val name: String = "",
                    val time: String = "",
                    val tags: String = "",
                    val difficulty: String = "",
+                   val budget : String = "",
+                   val people_quantity : String = "",
                    val ingredients: Array<String>,
                    val steps: Array<String>)

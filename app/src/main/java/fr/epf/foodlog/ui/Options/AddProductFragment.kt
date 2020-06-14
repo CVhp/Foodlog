@@ -240,11 +240,19 @@ class AddProductFragment : Fragment() {
                 "BOISSON" -> typeProduct = 9
             }
 
-            val date = LocalDate.parse(root.tvDate.text)
-            val nutriscore = root.nutriscore_TextView.text.toString()
+            val date : LocalDate
+            if (root.tvDate.text != ""){
+                date = LocalDate.parse(root.tvDate.text)
+                val nutriscore = root.nutriscore_TextView.text.toString()
+                getServer(name, typeProduct.toString(), date.toString(), stockEntre, NumUnite, nutriscore)
+            } else {
+                Toast.makeText(requireContext(),"Veuillez choisir une date", Toast.LENGTH_SHORT).show()
+            }
+
+            //val nutriscore = root.nutriscore_TextView.text.toString()
 
 
-            getServer(name, typeProduct.toString(), date.toString(), stockEntre, NumUnite, nutriscore)
+
             //Product.all.add(Product("${lastname}",typeProduct,date))
             //val bundle = Bundle()
             //Navigation.findNavController(it).navigate(R.id.return_to_listProduct_fragment, bundle);
@@ -370,7 +378,18 @@ class AddProductFragment : Fragment() {
             Log.d("syst", "Dependencies are downloading....try after few moment")
             return
         }
+
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.CAMERA
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestForPermission()
+            return
+        }
+
         mCameraSource!!.start(surface_camera_preview.holder)
+
 
         surface_camera_preview.holder.addCallback(object : SurfaceHolder.Callback {
             override fun surfaceChanged(p0: SurfaceHolder?, p1: Int, p2: Int, p3: Int) {
