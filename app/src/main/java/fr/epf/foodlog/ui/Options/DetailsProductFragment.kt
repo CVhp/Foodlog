@@ -100,7 +100,8 @@ class DetailsProductFragment : Fragment() {
             }
         }
 
-        var appContext = requireActivity().applicationContext
+        appContext = requireActivity().applicationContext
+
         val pref = appContext.getSharedPreferences(
             "Foodlog",
             Context.MODE_PRIVATE
@@ -290,13 +291,13 @@ class DetailsProductFragment : Fragment() {
 
                     override fun onStartTrackingTouch(seekBar: SeekBar) {
                         // Do something
-                        appContext = requireActivity().getApplicationContext()
+                      //  appContext = requireActivity().getApplicationContext()
                         Toast.makeText(appContext, "start tracking", Toast.LENGTH_SHORT).show()
                     }
 
                     override fun onStopTrackingTouch(seekBar: SeekBar) {
                         // Do something
-                        appContext = requireActivity().getApplicationContext()
+                        //appContext = requireActivity().getApplicationContext()
                         Toast.makeText(appContext, "stop tracking", Toast.LENGTH_SHORT).show()
                     }
                 })

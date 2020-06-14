@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.navigation.Navigation
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
@@ -54,7 +55,12 @@ class InvitationCreateFragment : Fragment() {
             }
 
             runBlocking {
-                service.postInvitation(token!!,fridge, profile, email)
+                val result = service.postInvitation(token!!,fridge, profile, email)
+                if(result.error){
+                    Toast.makeText(requireContext(),"Une erreur est survenue :" + result.error_msg,Toast.LENGTH_SHORT).show()
+                }else{
+                    Toast.makeText(requireContext(),"Invitation envoyée :" + result.error_msg,Toast.LENGTH_SHORT).show()
+                }
             }
 
         }

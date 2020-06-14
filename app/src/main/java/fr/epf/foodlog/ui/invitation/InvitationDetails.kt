@@ -57,15 +57,30 @@ class InvitationDetails : Fragment() {
 
         root.btn_invitation_accept.setOnClickListener {
             runBlocking {
-                service.confirmInvitation(token!!, tokenInvitation, 1)
-                Toast.makeText(requireContext(),"Invitation acceptée",Toast.LENGTH_SHORT).show()
-                requireActivity().onBackPressed()
+               val result = service.confirmInvitation(token!!, tokenInvitation, 1)
+                if(result.error){
+                    Toast.makeText(requireContext(),"une erreur est survenue" + result.error_msg,Toast.LENGTH_SHORT).show()
+                    requireActivity().onBackPressed()
+
+                }else{
+                    Toast.makeText(requireContext(),"Invitation acceptée",Toast.LENGTH_SHORT).show()
+                    requireActivity().onBackPressed()
+                }
+
+
             }
         }
         root.btn_invitation_decline.setOnClickListener {
             runBlocking {
-                service.confirmInvitation(token!!, tokenInvitation, 2)
-                Toast.makeText(requireContext(),"Invitation refusée",Toast.LENGTH_SHORT).show()
+                val result = service.confirmInvitation(token!!, tokenInvitation, 2)
+                if(result.error){
+                    Toast.makeText(requireContext(),"une erreur est survenue" + result.error_msg,Toast.LENGTH_SHORT).show()
+                    requireActivity().onBackPressed()
+
+                }else{
+                    Toast.makeText(requireContext(),"Invitation refusée",Toast.LENGTH_SHORT).show()
+                    requireActivity().onBackPressed()
+                }
                 requireActivity().onBackPressed()
             }
         }

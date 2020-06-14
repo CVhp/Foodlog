@@ -80,7 +80,7 @@ interface ProductService {
         @Field("id_fridge") id_fridge: Int,
         @Field("profile") profile: Int,
         @Field("email") email: String
-    )
+    ): ApiPostInvitation
 
     @FormUrlEncoded
     @POST("/apiv2/fridge/confirmInvitation.php")
@@ -88,7 +88,7 @@ interface ProductService {
         @Field("token") token: String,
         @Field("token_invitation") token_invitation: String,
         @Field("choice") choice: Int
-    )
+    ):ApiPostInvitation
 
     @FormUrlEncoded
     @POST("/apiv2/fridge/getMembers.php")
@@ -158,4 +158,9 @@ data class GetMember(
 data class Members(
     val user: String,
     val profile: Int
+)
+
+data class ApiPostInvitation(
+    val error: Boolean,
+    val error_msg:String?
 )
