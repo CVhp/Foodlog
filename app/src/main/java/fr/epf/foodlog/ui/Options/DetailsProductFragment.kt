@@ -1,6 +1,5 @@
 package fr.epf.foodlog.ui.Options
 
-import UploadResponse
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.DatePickerDialog
@@ -76,6 +75,14 @@ class DetailsProductFragment : Fragment() {
         // Inflate the layout for this fragment
         root = inflater.inflate(R.layout.fragment_details_product, container, false)
         val button = root.findViewById<Button>(R.id.modifier)
+
+        val pref = appContext.getSharedPreferences(
+            "Foodlog",
+            Context.MODE_PRIVATE
+        )
+        val profile=pref.getInt("profile",0)
+        if (profile>1){
+
         root.product_imageView_details.setOnClickListener {
             if(ContextCompat.checkSelfPermission(requireContext(),android.Manifest.permission.CAMERA) ==
                 PackageManager.PERMISSION_DENIED){
@@ -99,14 +106,11 @@ class DetailsProductFragment : Fragment() {
                 button.setVisibility(View.VISIBLE);
             }
         }
+        }
 
         appContext = requireActivity().applicationContext
 
-        val pref = appContext.getSharedPreferences(
-            "Foodlog",
-            Context.MODE_PRIVATE
-        )
-       val profile=pref.getInt("profile",0)
+
 
         id2 = requireArguments().getInt("id")
 
