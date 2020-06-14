@@ -1,5 +1,6 @@
 package fr.epf.foodlog.ui.Notif
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -70,8 +71,15 @@ class SettingsFragment : Fragment() {
             }
             val intent = Intent(requireContext(), LoadingActivity::class.java)
             startActivity(intent)
-            val bundle = Bundle()
-            Navigation.findNavController(it).navigate(R.id.return_to_listProduct_fragment, bundle);
+            val pref = requireActivity().getApplicationContext().getSharedPreferences(
+                "Foodlog",
+                Context.MODE_PRIVATE
+            )
+            val fridge=pref.getInt("fridge",0);
+            val target=SettingsFragmentDirections.returnToListProductFragment(fridge)
+            Navigation.findNavController(it).navigate(target);
+           // val bundle = Bundle()
+           // Navigation.findNavController(it).navigate(R.id.return_to_listProduct_fragment, bundle);
         }
 
         return root

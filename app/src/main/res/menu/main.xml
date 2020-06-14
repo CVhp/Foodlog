@@ -2,11 +2,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+
+
     <item
-        android:id="@+id/action_recette"
-        android:icon="@drawable/ic_search_black_24dp"
-        android:title="Recette"
+        android:id="@+id/action_invitation"
+        android:icon="@drawable/ic_mail"
+        android:title="Invitation"
+        android:iconTint="#FFFFFF"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_search"
+        android:icon="@drawable/ic_search"
+        android:title="Invitation"
+        android:iconTint="#FFFFFF"
+        app:showAsAction="ifRoom" />
+
     <item
         android:id="@+id/action_settings"
         android:title="@string/action_settings"

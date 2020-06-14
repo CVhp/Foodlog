@@ -2,9 +2,11 @@ package fr.epf.foodlog.ui.recipe
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
@@ -32,11 +34,24 @@ class RecipeAdapter (val context: Context, val recipes: List<Recette>) : Recycle
         holder.recipeView.recipe_name_textview.text = "${recipe.name}"
         holder.recipeView.difficulty.text = "${recipe.difficulty}"
 
+        holder.recipeView.difficulty.setTextColor(
+            when(recipe.difficulty){
+                "très facile" -> ContextCompat.getColor(context, R.color.lightGreen)
+                "facile" -> ContextCompat.getColor(context, R.color.colorPrimary)
+                "Niveau moyen" -> ContextCompat.getColor(context, R.color.orange)
+                else -> ContextCompat.getColor(context, R.color.red)
+            }
+        )
+
+        val tag = recipe.tags
+        val tags = tag.split(":")
+
+        holder.recipeView.tags.text = tags[1]
         holder.recipeView.setOnClickListener {
             val bundle = bundleOf("name" to recipe.name,
                 "rate" to recipe.rate,
                 "time" to recipe.time,
-                "tags" to recipe.tags,
+                "tags" to tags[1],
                 "difficulty" to recipe.difficulty,
                 "ingredients" to recipe.ingredients,
                 "steps" to recipe.steps)

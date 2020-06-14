@@ -1,5 +1,6 @@
 package fr.epf.foodlog.ui.Options
 
+import UploadResponse
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.DatePickerDialog
@@ -9,21 +10,34 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.navigation.Navigation
+import com.bumptech.glide.Glide
 
 import fr.epf.foodlog.R
 import fr.epf.foodlog.service.ProductService
+import fr.epf.foodlog.service.getFileName
 import fr.epf.foodlog.service.retrofit
 import kotlinx.android.synthetic.main.fragment_details_product.*
 import kotlinx.android.synthetic.main.fragment_details_product.view.*
 import kotlinx.android.synthetic.main.stock_dialog.view.*
 import kotlinx.coroutines.runBlocking
+import net.simplifiedcoding.imageuploader.UploadRequestBody
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.IOException
 import java.time.LocalDate
 import java.util.*
 
@@ -41,6 +55,18 @@ class DetailsProductFragment : Fragment() {
     private var nutriscore: String? = null
     lateinit var appContext: Context
     lateinit var root : View
+    private var uri:String?=null
+
+
+    val REQUEST_IMAGE_CAPTURE = 1
+    val REQUEST_TAKE_PHOTO = 1
+    private var selectedImageUri: Uri? = null
+    lateinit var currentPhotoPath: String
+    lateinit var photoUri: Uri
+    lateinit var file : File
+
+
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -49,17 +75,35 @@ class DetailsProductFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         root = inflater.inflate(R.layout.fragment_details_product, container, false)
-
+        val button = root.findViewById<Button>(R.id.modifier)
         root.product_imageView_details.setOnClickListener {
-            if(ContextCompat.checkSelfPermission(requireContext(),android.Manifest.permission.READ_EXTERNAL_STORAGE) ==
+            if(ContextCompat.checkSelfPermission(requireContext(),android.Manifest.permission.CAMERA) ==
                 PackageManager.PERMISSION_DENIED){
-                val permissions = arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE);
-                requestPermissions(permissions, PERMISSION_CODE);
+                var permissions = arrayOf(android.Manifest.permission.CAMERA);
+                requestPermissions(permissions, REQUEST_TAKE_PHOTO);
+
+                if(ContextCompat.checkSelfPermission(requireContext(),android.Manifest.permission.READ_EXTERNAL_STORAGE) ==
+                    PackageManager.PERMISSION_DENIED){
+                     permissions = arrayOf(android.Manifest.permission.CAMERA);
+                    requestPermissions(permissions, PERMISSION_CODE)
+                    takePicture()
+                    button.setVisibility(View.VISIBLE);
+                }else{
+                    takePicture()
+                    button.setVisibility(View.VISIBLE);
+                }
+
             }
             else {
-                pickImageFromGallery()
+                takePicture()
+                button.setVisibility(View.VISIBLE);
             }
         }
+        val pref = appContext.getSharedPreferences(
+            "Foodlog",
+            Context.MODE_PRIVATE
+        )
+       val profile=pref.getInt("profile",0)
 
         id2 = requireArguments().getInt("id")
 
@@ -99,7 +143,7 @@ class DetailsProductFragment : Fragment() {
         root.details_unite.text= unite
 
 
-        var uri = requireArguments().getString("uri") as String
+        uri = requireArguments().getString("uri") as String
         if (uri == "null"){
             root.product_imageView_details.setImageResource(
                 when(clientSexe){
@@ -116,7 +160,8 @@ class DetailsProductFragment : Fragment() {
                 }
             )
         } else {
-            root.product_imageView_details.setImageURI(Uri.parse(uri))
+            //root.product_imageView_details.setImageURI(Uri.parse(uri))
+            Glide.with(requireContext()).load(Uri.parse(uri)).into(root.product_imageView_details)
         }
 
 
@@ -133,7 +178,7 @@ class DetailsProductFragment : Fragment() {
         val spinner = root.findViewById<Spinner>(R.id.type_spinner)
         val textViewType = root.findViewById<TextView>(R.id.details_sexe)
 
-        val button = root.findViewById<Button>(R.id.modifier)
+
 
         val dateP = root.findViewById<TextView>(R.id.details_actif)
         val dateM = root.findViewById<TextView>(R.id.DetailDate)
@@ -144,153 +189,157 @@ class DetailsProductFragment : Fragment() {
         val textViewStock = root.findViewById<TextView>(R.id.details_stock)
         val modifStock = root.findViewById<TextView>(R.id.edit_stock)
 
-        textViewNom.setOnLongClickListener {
-            textViewNom.setVisibility(View.GONE);
-            editText.setVisibility(View.VISIBLE);
-            if(button.visibility==View.GONE)
-                button.setVisibility(View.VISIBLE);
-            true
-        }
+        if(profile>1) {
 
-        textViewType.setOnLongClickListener {
-            textViewType.setVisibility(View.GONE);
-            spinner.setVisibility(View.VISIBLE);
-            if(button.visibility==View.GONE)
-                button.setVisibility(View.VISIBLE);
-            true
-        }
+            textViewNom.setOnLongClickListener {
+                textViewNom.setVisibility(View.GONE);
+                editText.setVisibility(View.VISIBLE);
+                if (button.visibility == View.GONE)
+                    button.setVisibility(View.VISIBLE);
+                true
+            }
 
-        dateP.setOnLongClickListener {
-            dateP.setVisibility(View.GONE);
-            dateM.setVisibility(View.VISIBLE);
+            textViewType.setOnLongClickListener {
+                textViewType.setVisibility(View.GONE);
+                spinner.setVisibility(View.VISIBLE);
+                if (button.visibility == View.GONE)
+                    button.setVisibility(View.VISIBLE);
+                true
+            }
 
-            //                      DATEPICKER
-            dateM.setOnClickListener(View.OnClickListener {
-                val cal: Calendar = Calendar.getInstance()
-                val year: Int = cal.get(Calendar.YEAR)
-                val month: Int = cal.get(Calendar.MONTH)
-                val day: Int = cal.get(Calendar.DAY_OF_MONTH)
-                val dialog = DatePickerDialog(
-                    requireContext(),
-                    mDateSetListener,
-                    year, month, day
-                )
-                dialog.show()
-            })
+            dateP.setOnLongClickListener {
+                dateP.setVisibility(View.GONE);
+                dateM.setVisibility(View.VISIBLE);
 
-            mDateSetListener =
-                DatePickerDialog.OnDateSetListener { datePicker, year, month, day ->
-                    var month = month
-                    var date_month : String = ""
-                    var date_day : String = ""
-                    month = month + 1
-                    if ("${month}".length == 1){
-                        date_month = "0$month"
-                    } else {
-                        date_month = "$month"
+                //                      DATEPICKER
+                dateM.setOnClickListener(View.OnClickListener {
+                    val cal: Calendar = Calendar.getInstance()
+                    val year: Int = cal.get(Calendar.YEAR)
+                    val month: Int = cal.get(Calendar.MONTH)
+                    val day: Int = cal.get(Calendar.DAY_OF_MONTH)
+                    val dialog = DatePickerDialog(
+                        requireContext(),
+                        mDateSetListener,
+                        year, month, day
+                    )
+                    dialog.show()
+                })
+
+                mDateSetListener =
+                    DatePickerDialog.OnDateSetListener { datePicker, year, month, day ->
+                        var month = month
+                        var date_month: String = ""
+                        var date_day: String = ""
+                        month = month + 1
+                        if ("${month}".length == 1) {
+                            date_month = "0$month"
+                        } else {
+                            date_month = "$month"
+                        }
+
+                        if ("${day}".length == 1) {
+                            date_day = "0$day"
+                        } else {
+                            date_day = "$day"
+                        }
+                        val date = "$year-$date_month-$date_day"
+                        dateM.text = date
+
                     }
 
-                    if ("${day}".length == 1){
-                        date_day = "0$day"
-                    } else {
-                        date_day = "$day"
+                if (button.visibility == View.GONE)
+                    button.setVisibility(View.VISIBLE);
+                true
+            }
+
+            textViewUnite.setOnLongClickListener {
+                textViewUnite.setVisibility(View.GONE)
+                spinnerUnite.setVisibility(View.VISIBLE)
+                if (button.visibility == View.GONE)
+                    button.setVisibility(View.VISIBLE)
+                true
+            }
+
+            textViewStock.setOnLongClickListener {
+                textViewStock.setVisibility(View.GONE)
+                modifStock.setVisibility(View.VISIBLE)
+                if (button.visibility == View.GONE)
+                    button.setVisibility(View.VISIBLE)
+                true
+            }
+
+            root.edit_stock.setOnClickListener {
+                if (spinnerUnite.visibility == View.VISIBLE) {
+                    unite = spinnerUnite.selectedItem as String
+                } else {
+                    unite = textViewUnite.text.toString()
+                }
+
+
+                val mDialogView =
+                    LayoutInflater.from(requireContext()).inflate(R.layout.stock_dialog, null)
+                // Set a SeekBar change listener
+                mDialogView.seekBar.setOnSeekBarChangeListener(object :
+                    SeekBar.OnSeekBarChangeListener {
+                    override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
+                        // Display the current progress of SeekBar
+                        mDialogView.text_view_seekbar.text = "$i"
                     }
-                    val date = "$year-$date_month-$date_day"
-                    dateM.text = date
+
+                    override fun onStartTrackingTouch(seekBar: SeekBar) {
+                        // Do something
+                        appContext = requireActivity().getApplicationContext()
+                        Toast.makeText(appContext, "start tracking", Toast.LENGTH_SHORT).show()
+                    }
+
+                    override fun onStopTrackingTouch(seekBar: SeekBar) {
+                        // Do something
+                        appContext = requireActivity().getApplicationContext()
+                        Toast.makeText(appContext, "stop tracking", Toast.LENGTH_SHORT).show()
+                    }
+                })
+
+                // Set le input stock
+                if (unite == "portions") {
+                    mDialogView.seekBar.setVisibility(View.VISIBLE);
+                    mDialogView.text_view_seekbar.setVisibility(View.VISIBLE);
+                    mDialogView.product_dialog_unite.setText("portions")
+                    NumUnite = 2
+                } else {
+                    mDialogView.stock_edittext.setVisibility(View.VISIBLE);
+                    mDialogView.product_dialog_unite.setText("grammes")
+                    NumUnite = 1
+                }
+                //AlertDialogBuilder
+                val mBuilder = android.app.AlertDialog.Builder(requireContext())
+                    .setView(mDialogView)
+                    .setTitle("Ajout de la quantité")
+                //show dialog
+                val mAlertDialog = mBuilder.show()
+                //add button click of custom layout
+                mDialogView.dialogValiderBtn.setOnClickListener {
+                    //dismiss dialog
+                    mAlertDialog.dismiss()
+                    //get text from EditTexts of custom layout
+                    if (unite == "portions") {
+                        stock = mDialogView.text_view_seekbar.text.toString()
+                    } else {
+                        stock = mDialogView.stock_edittext.text.toString()
+
+                    }
+                    //set the input text in TextView
+                    if (stock != "" || stock != "- -")
+                        edit_stock.setText(stock)
+                    else
+                        edit_stock.setText("Entrez la quantité")
 
                 }
 
-            if(button.visibility==View.GONE)
-                button.setVisibility(View.VISIBLE);
-            true
-        }
-
-        textViewUnite.setOnLongClickListener {
-            textViewUnite.setVisibility(View.GONE)
-            spinnerUnite.setVisibility(View.VISIBLE)
-            if(button.visibility==View.GONE)
-                button.setVisibility(View.VISIBLE)
-            true
-        }
-
-        textViewStock.setOnLongClickListener {
-            textViewStock.setVisibility(View.GONE)
-            modifStock.setVisibility(View.VISIBLE)
-            if(button.visibility==View.GONE)
-                button.setVisibility(View.VISIBLE)
-            true
-        }
-
-        root.edit_stock.setOnClickListener {
-            if (spinnerUnite.visibility==View.VISIBLE) {
-                unite = spinnerUnite.selectedItem as String
-            } else {
-                unite = textViewUnite.text.toString()
-            }
-
-            val mDialogView = LayoutInflater.from(requireContext()).inflate(R.layout.stock_dialog, null)
-            // Set a SeekBar change listener
-            mDialogView.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
-                    // Display the current progress of SeekBar
-                    mDialogView.text_view_seekbar.text = "$i"
+                //cancel button click of custom layout
+                mDialogView.dialogCancelBtn.setOnClickListener {
+                    //dismiss dialog
+                    mAlertDialog.dismiss()
                 }
-
-                override fun onStartTrackingTouch(seekBar: SeekBar) {
-                    // Do something
-                    appContext = requireActivity().getApplicationContext()
-                    Toast.makeText(appContext,"start tracking",Toast.LENGTH_SHORT).show()
-                }
-
-                override fun onStopTrackingTouch(seekBar: SeekBar) {
-                    // Do something
-                    appContext = requireActivity().getApplicationContext()
-                    Toast.makeText(appContext,"stop tracking",Toast.LENGTH_SHORT).show()
-                }
-            })
-
-            // Set le input stock
-            if ( unite=="portions"){
-                mDialogView.seekBar.setVisibility(View.VISIBLE);
-                mDialogView.text_view_seekbar.setVisibility(View.VISIBLE);
-                mDialogView.product_dialog_unite.setText("portions")
-                NumUnite = 2
-            }
-            else {
-                mDialogView.stock_edittext.setVisibility(View.VISIBLE);
-                mDialogView.product_dialog_unite.setText("grammes")
-                NumUnite = 1
-            }
-            //AlertDialogBuilder
-            val mBuilder = android.app.AlertDialog.Builder(requireContext())
-                .setView(mDialogView)
-                .setTitle("Ajout de la quantité")
-            //show dialog
-            val  mAlertDialog = mBuilder.show()
-            //add button click of custom layout
-            mDialogView.dialogValiderBtn.setOnClickListener {
-                //dismiss dialog
-                mAlertDialog.dismiss()
-                //get text from EditTexts of custom layout
-                if (unite=="portions"){
-                    stock = mDialogView.text_view_seekbar.text.toString()
-                }
-                else {
-                    stock = mDialogView.stock_edittext.text.toString()
-
-                }
-                //set the input text in TextView
-                if(stock!="" || stock!="- -")
-                    edit_stock.setText(stock)
-                else
-                    edit_stock.setText("Entrez la quantité")
-
-            }
-
-            //cancel button click of custom layout
-            mDialogView.dialogCancelBtn.setOnClickListener {
-                //dismiss dialog
-                mAlertDialog.dismiss()
             }
         }
 
@@ -362,8 +411,16 @@ class DetailsProductFragment : Fragment() {
 
             getServer(name, typeProduct.toString(), nvdate.toString(), stock, uniteVraie)
 
-            val bundle = Bundle()
-            Navigation.findNavController(it).navigate(R.id.return_to_listProduct_fragment, bundle);
+            if(selectedImageUri!=null){
+                uploadImage()
+            }
+
+
+
+
+            val fridge = pref.getInt("fridge", 0);
+            val target=DetailsProductFragmentDirections.returnToListProductFragment(fridge)
+            Navigation.findNavController(requireView()).navigate(target);
         }
 
         return root
@@ -377,9 +434,10 @@ class DetailsProductFragment : Fragment() {
             Context.MODE_PRIVATE
         )
         val token = pref.getString("token", null);
+        val fridge = pref.getInt("fridge", 0);
         Log.d("concurence", "${name}  ${type}  ${date}  $id2 "  )
         runBlocking {
-            val result = service.updateProduct("${token}","${name}","${type}","${date}","${stock}", unite, id2)
+            val result = service.updateProduct("${token}",fridge,"${name}","${type}","${date}","${stock}", unite, id2)
         }
     }
 
@@ -410,15 +468,16 @@ class DetailsProductFragment : Fragment() {
                         Context.MODE_PRIVATE
                     )
                     val token = pref.getString("token", null);
+                    val fridge=pref.getInt("fridge",0);
 
                     runBlocking {
-                        service.deleteProduct("${token}", id2)
+                        service.deleteProduct("${token}",fridge, id2)
                     }
 
                     //Product.all.removeAt(id2)
-                    val bundle = Bundle()
-                    Navigation.findNavController(requireView()).navigate(R.id.return_to_listProduct_fragment, bundle);
-
+                   // val bundle = Bundle()
+                    val target=DetailsProductFragmentDirections.returnToListProductFragment(fridge)
+                    Navigation.findNavController(requireView()).navigate(target);
                 }
 
                 builder.show()
@@ -429,28 +488,74 @@ class DetailsProductFragment : Fragment() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(requestCode==REQUEST_TAKE_PHOTO && resultCode==Activity.RESULT_OK){
+            product_imageView_details.rotation=90f
+            product_imageView_details.setImageURI(Uri.parse(currentPhotoPath))
+        }
         super.onActivityResult(requestCode, resultCode, data)
-        /*if (requestCode == CLICK_ON_IMAGE) {
-            /*val bitmap = data?.getParcelableExtra("data") as? Bitmap //= if data est null on créée bitmap
-            Log.d("EPF", "image")
-            product_imageView_details.setImageBitmap(bitmap)*/
-            pickImageFromGallery()
-        }*/
-        if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE){
-            val uriPicture = data?.data
-            if (uriPicture != null){
-                product_imageView_details.setImageURI(uriPicture)
-                Log.d("test", "${uriPicture}")
-                addUriDataBase(uriPicture)
+    }
+    private fun takePicture(){
+        val intent =Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        if(intent.resolveActivity(requireContext().packageManager)!=null){
+            var photoFile:File?=null
+            try {
+                photoFile=createImageFile()
+            }catch (e: IOException){}
+            if(photoFile!=null){
+                photoUri= FileProvider.getUriForFile(requireContext(),"fr.epf.foodlog.fileprovider",photoFile)
+                intent.putExtra(MediaStore.EXTRA_OUTPUT,photoUri)
+                startActivityForResult(intent,REQUEST_TAKE_PHOTO)
+                selectedImageUri=photoUri
             }
         }
     }
+    private fun createImageFile(): File?{
+        val fileName="MyPicture"
+        val storageDir=requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val image=File.createTempFile(
+            fileName,".jpg",storageDir        )
+        currentPhotoPath=image.absolutePath
+        return image
+    }
+
+    private fun uploadImage() {
+        if (selectedImageUri == null) {
+            // layout_root.snackbar("Select an Image First")
+            // return
+        }
+
+        val parcelFileDescriptor =  requireContext().contentResolver.openFileDescriptor(selectedImageUri!!, "r", null)
+
+        val inputStream = FileInputStream(parcelFileDescriptor!!.fileDescriptor)
+        file = File(requireContext().cacheDir, requireContext().contentResolver.getFileName(selectedImageUri!!))
+        val outputStream = FileOutputStream(file)
+        inputStream.copyTo(outputStream)
+        appContext = requireActivity().getApplicationContext()
+        val pref = appContext.getSharedPreferences(
+            "Foodlog",
+            Context.MODE_PRIVATE
+        )
+        val fridge=pref.getInt("fridge",0)
+
+       // progress_bar.progress = 0
+        val body = UploadRequestBody(file, "image")
+        val service = retrofit("https://foodlog.min.epf.fr/").create(ProductService::class.java)
+
+        runBlocking { service.uploadImage(MultipartBody.Part.createFormData("image",file.name,body),RequestBody.create("multipart/form-data".toMediaTypeOrNull(), "json"), id2)
+        }
+        requireContext().applicationContext.contentResolver.delete(photoUri,null,null)
+     }
+
+
+
 
     private fun pickImageFromGallery() {
         val intent = Intent(Intent.ACTION_PICK)
         intent.type = "image/*"
         startActivityForResult(intent, IMAGE_PICK_CODE)
     }
+
+
 
     private fun addUriDataBase(uriPicture : Uri?) {
         /*
@@ -470,8 +575,10 @@ class DetailsProductFragment : Fragment() {
             Context.MODE_PRIVATE
         )
         val token = pref.getString("token", null);
+        val fridge=pref.getInt("fridge",0)
         runBlocking {
-            val result = service.postUri("${token}", id2,"${uriPicture}")
+            // ajout upload image au serveur
+           // val result = service.postUri("${token}",fridge, id2,"${uriPicture}")
         }
     }
 

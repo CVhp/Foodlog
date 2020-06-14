@@ -34,7 +34,7 @@ class AlarmReceiver : BroadcastReceiver() {
             )
 
             val token = pref?.getString("token", null)
-            val result = service.getProducts("$token")
+            val result = service.getProducts("$token",0)
 
             val date = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE)
             val currentDate = LocalDate.parse(date)

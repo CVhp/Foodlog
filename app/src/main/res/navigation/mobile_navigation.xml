@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_listproduct">
+    app:startDestination="@id/nav_listfrigo">
 
     <fragment
         android:id="@+id/nav_listproduct"
@@ -26,6 +26,20 @@
         <action
             android:id="@+id/navigate_to_recette_fragment"
             app:destination="@id/nav_recipe"/>
+
+        <action
+        android:id="@+id/navigate_to_vacances_fragment"
+        app:destination="@id/nav_vacances"/>
+
+        <argument
+            android:name="fridge"
+            app:argType="integer"
+            android:defaultValue="0" />
+
+        <action
+            android:id="@+id/action_nav_listproduct_to_nav_invitation_create"
+            app:destination="@id/nav_invitation_create" />
+
     </fragment>
 
     <fragment
@@ -33,6 +47,17 @@
         android:name="fr.epf.foodlog.ui.Options.AddProductFragment"
         android:label="@string/menu_addProduct"
         tools:layout="@layout/fragment_add_product" >
+        <action
+            android:id="@+id/return_to_listProduct_fragment"
+            app:destination="@id/nav_listproduct"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_vacances"
+        android:name="fr.epf.foodlog.ui.Options.VacancesFragment"
+        android:label="Voyage"
+        tools:layout="@layout/fragment_vacances" >
+
         <action
             android:id="@+id/return_to_listProduct_fragment"
             app:destination="@id/nav_listproduct"/>
@@ -91,6 +116,73 @@
         android:name="fr.epf.foodlog.ui.ShoppingList.ShoppingListFragment"
         android:label="@string/menu_shoppingList"
         tools:layout="@layout/fragment_shopping_list" />
+    <fragment
+        android:id="@+id/addFridgeFragment"
+        android:name="fr.epf.foodlog.ui.fridge.AddFridgeFragment"
+        android:label="Ajouter un frigo"
+        tools:layout="@layout/fragment_add_fridge">
+        <action
+            android:id="@+id/action_addFridgeFragment_to_fridgeFragment"
+            app:destination="@id/nav_listfrigo" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_listfrigo"
+        android:name="fr.epf.foodlog.ui.fridge.FridgeFragment"
+        android:label="Frigos"
+        tools:layout="@layout/fragment_fridge">
+
+        <action
+            android:id="@+id/action_fridgeFragment_to_addFridgeFragment"
+            app:destination="@id/addFridgeFragment" />
+        <action
+            android:id="@+id/action_fridgeFragment_to_nav_listproduct"
+            app:destination="@id/nav_listproduct" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/nav_invitation"
+        android:name="fr.epf.foodlog.ui.invitation.InvitationFragment"
+        android:label="@string/menu_invitation"
+        tools:layout="@layout/fragment_invitation">
+        <action
+            android:id="@+id/action_nav_invitation_to_invitationDetails"
+            app:destination="@id/invitationDetails3" />
+        <action
+            android:id="@+id/action_nav_listproduct_to_nav_invitation_create"
+            app:destination="@id/nav_invitation_create" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_invitation_create"
+        android:name="fr.epf.foodlog.ui.invitation.InvitationCreateFragment"
+        android:label="Inviter un amis"
+        tools:layout="@layout/fragment_invitation_create">
+        <action
+            android:id="@+id/action_nav_invitation_create_to_nav_listproduct"
+            app:destination="@id/nav_listproduct" />
+    </fragment>
+    <fragment
+        android:id="@+id/invitationDetails3"
+        android:name="fr.epf.foodlog.ui.invitation.InvitationDetails"
+        android:label="Invitation"
+        tools:layout="@layout/fragment_invitation_details">
+        <argument
+            android:name="tokenInvitation"
+            app:argType="string" />
+        <argument
+            android:name="mailInvitation"
+            app:argType="string" />
+        <argument
+            android:name="fridgeInvitation"
+            app:argType="string" />
+        <argument
+            android:name="profile"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_member"
+        android:name="fr.epf.foodlog.ui.member.MemberFragment"
+        android:label="Membres"
+        tools:layout="@layout/fragment_member" />
 
 
 </navigation>

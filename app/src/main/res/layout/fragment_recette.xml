@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.recipe.RecipeFragment">
 
     <LinearLayout
@@ -12,6 +12,10 @@
         android:orientation="vertical">
 
         <TextView
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="5dp"
+            android:textSize="20dp"
+            android:textStyle="bold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Effectuer une recherche avec :"/>
@@ -21,25 +25,31 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:gravity="center"
+            android:layout_marginTop="5dp"
+            android:layout_height="wrap_content">
 
             <Button
                 android:id="@+id/choisir_produits"
-                android:layout_width="wrap_content"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/shape"
+                android:layout_width="180dp"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
                 android:text="Choisir les produits"/>
 
             <Button
                 android:id="@+id/lancer_recherche"
-                android:layout_width="wrap_content"
+                android:layout_toRightOf="@+id/choisir_produits"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/shape"
+                android:layout_width="180dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
                 android:text="Lancer la recherche"/>
 
-        </LinearLayout>
+        </RelativeLayout>
 
 
 

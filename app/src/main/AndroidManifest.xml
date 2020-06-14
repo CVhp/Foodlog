@@ -4,6 +4,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-feature android:name="android.hardware.camera"
+        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -12,6 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -28,9 +31,16 @@
         <activity android:name=".LoadingActivities.SignInActivity" />
         <activity android:name=".LoadingActivities.SignUpActivity" />
 
-        <activity
-            android:name=".WelcomeScreenActivity"
-            android:theme="@style/AppTheme2"/>
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="fr.epf.foodlog.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"/>
+        </provider>
+
 
         <meta-data
             android:name="com.google.android.gms.vision.DEPENDENCIES"

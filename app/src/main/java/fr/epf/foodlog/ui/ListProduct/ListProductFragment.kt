@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.*
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,6 +27,7 @@ import fr.epf.foodlog.model.Product
 import fr.epf.foodlog.model.UnityProduct
 import fr.epf.foodlog.service.ProductService
 import fr.epf.foodlog.service.retrofit
+import kotlinx.android.synthetic.main.fragment_list_product.view.*
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 
@@ -33,7 +35,9 @@ class ListProductFragment : Fragment(), ProductInterface {
 
     var adap: ProductAdapter? = null
     var actionMode: ActionMode? = null
+    private var fridge=0
     lateinit var products_recyclerview : RecyclerView
+    private var profile =0
 
     companion object {
         var isMultiSelectOn = false
@@ -52,8 +56,33 @@ class ListProductFragment : Fragment(), ProductInterface {
             savedInstanceState: Bundle?
     ): View? {
 
+        arguments?.let{
+
+            val safeArgs= ListProductFragmentArgs.fromBundle(it)
+            fridge=safeArgs.fridge
+
+            val pref = requireContext().getSharedPreferences(
+                "Foodlog",
+                Context.MODE_PRIVATE
+            )
+
+            if (fridge != 0){
+                val editor: SharedPreferences.Editor = pref.edit()
+                editor.putInt(
+                    "fridge", fridge
+                )
+                editor.apply()
+            } else if (fridge == 0) {
+                fridge = pref.getInt("fridge", 0)
+            }
+             profile = pref.getInt("profile",0)
+        }
+
         val root = inflater.inflate(R.layout.fragment_list_product, container, false)
 
+
+        root.fab.isEnabled= (profile >= 4)
+        root.fab.isVisible= (profile >= 4)
         requireActivity().runOnUiThread (Runnable {
 
             products_recyclerview = root.findViewById<View>(R.id.products_recyclerview) as RecyclerView
@@ -97,7 +126,7 @@ class ListProductFragment : Fragment(), ProductInterface {
                 Context.MODE_PRIVATE
             )
             val token = pref.getString("token", null)
-            val result = service.getProducts("$token")
+            val result = service.getProducts("$token",fridge)
             result.products.map {
                 val id = it.id
                 val name = it.name
@@ -166,6 +195,10 @@ class ListProductFragment : Fragment(), ProductInterface {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.main, menu)
+        if(profile<10){
+            menu.findItem(R.id.action_invitation).isVisible=false
+            menu.findItem(R.id.action_invitation).isEnabled=false
+        }
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -182,13 +215,16 @@ class ListProductFragment : Fragment(), ProductInterface {
             }
             R.id.action_settings ->{
                 var bundle = Bundle()
-                Navigation.findNavController(requireView()).navigate(R.id.navigate_to_settings_fragment, bundle);
+                Navigation.findNavController(requireView()).navigate(R.id.navigate_to_settings_fragment, bundle)
             }
-            R.id.action_recette -> {
-                var bundle = Bundle()
-                Navigation.findNavController(requireView()).navigate(R.id.navigate_to_recette_fragment, bundle);
-                true
+            R.id.action_invitation->{
+                val target = ListProductFragmentDirections.actionNavListproductToNavInvitationCreate()
+                Navigation.findNavController(requireView()).navigate(target)
             }
+            R.id.action_search->{
+                Navigation.findNavController(requireView()).navigate(R.id.navigate_to_vacances_fragment)
+            }
+
             else -> true
         }
         return super.onOptionsItemSelected(item)
@@ -203,9 +239,10 @@ class ListProductFragment : Fragment(), ProductInterface {
                 Context.MODE_PRIVATE
             )
             val token = pref.getString("token", null);
-            runBlocking {
-                service.deleteProduct("${token}", 48)
-            }
+            val fridge=pref.getInt("fridge",0);
+            //runBlocking {
+                //service.deleteProduct("${token}",fridge, 48)
+            //}
             when (item?.getItemId()) {
 
                 R.id.action_delete -> {
@@ -214,7 +251,7 @@ class ListProductFragment : Fragment(), ProductInterface {
                     //adap?.deleteSelectedIds()
                     val selectedIdIteration = adap?.selectedIds?.listIterator();
                     adap?.selectedIds?.map{runBlocking {
-                        service.deleteProduct("${token}", it )
+                        service.deleteProduct("${token}",fridge, it)
                     }}
                     //while (selectedIdIteration!!.hasNext()) {
                     Log.d("1", "${adap?.selectedIds}")
