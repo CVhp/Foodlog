@@ -99,6 +99,8 @@ class DetailsProductFragment : Fragment() {
                 button.setVisibility(View.VISIBLE);
             }
         }
+
+        var appContext = requireActivity().applicationContext
         val pref = appContext.getSharedPreferences(
             "Foodlog",
             Context.MODE_PRIVATE
