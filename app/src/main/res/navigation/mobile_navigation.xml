@@ -39,6 +39,9 @@
         <action
             android:id="@+id/action_nav_listproduct_to_nav_invitation_create"
             app:destination="@id/nav_invitation_create" />
+        <action
+            android:id="@+id/action_nav_listproduct_to_nav_listfrigo"
+            app:destination="@id/nav_listfrigo" />
 
     </fragment>
 

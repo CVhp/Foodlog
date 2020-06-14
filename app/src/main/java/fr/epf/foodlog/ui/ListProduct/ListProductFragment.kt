@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.*
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
@@ -198,6 +199,8 @@ class ListProductFragment : Fragment(), ProductInterface {
         if(profile<10){
             menu.findItem(R.id.action_invitation).isVisible=false
             menu.findItem(R.id.action_invitation).isEnabled=false
+            menu.findItem(R.id.action_delete_fridge).isVisible=false
+            menu.findItem(R.id.action_delete_fridge).isEnabled=false
         }
         super.onCreateOptionsMenu(menu, inflater)
     }
@@ -223,6 +226,40 @@ class ListProductFragment : Fragment(), ProductInterface {
             }
             R.id.action_search->{
                 Navigation.findNavController(requireView()).navigate(R.id.navigate_to_vacances_fragment)
+            }
+            R.id.action_delete_fridge->{
+                val builder = AlertDialog.Builder(requireContext())
+                val pref = requireContext().getSharedPreferences(
+                    "Foodlog",
+                    Context.MODE_PRIVATE
+                )
+                builder.setTitle("Confirmation suppression")
+                builder.setMessage(
+                    "Voulez vous supprimer votre frigo ? Cette action est irréversible"
+                )
+                builder.setNegativeButton(android.R.string.no) { _, _ ->
+                }
+                builder.setPositiveButton(android.R.string.yes) { _, _ ->
+                    val service =
+                        retrofit("https://foodlog.min.epf.fr/").create(ProductService::class.java)
+
+                    runBlocking {
+                        val token = pref.getString("token",null)
+                        val fridge=pref.getInt("fridge",0)
+                        service.deleteFridge(token!!,fridge)
+                        val editor=pref.edit()
+                        editor.remove("fridge")
+                        editor.apply()
+
+                        val target= ListProductFragmentDirections.actionNavListproductToNavListfrigo()
+                        Navigation.findNavController(requireView()).navigate(target)
+
+                    }
+                }
+                builder.show()
+
+
+
             }
 
             else -> true

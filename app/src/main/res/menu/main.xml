@@ -21,6 +21,11 @@
         android:id="@+id/action_settings"
         android:title="@string/action_settings"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_delete_fridge"
+        android:icon="@drawable/mr_dialog_close_light"
+        android:title="Supprimer Frigo"
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/action_logout"

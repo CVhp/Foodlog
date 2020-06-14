@@ -113,6 +113,13 @@ interface ProductService {
         @Part("id_product")id_product:Int
     )
 
+    @FormUrlEncoded
+    @POST("/apiv2/fridge/delete.php")
+    suspend fun deleteFridge(
+        @Field("token") token: String,
+        @Field("id_fridge") id_fridge: Int
+    )
+
 }
 
 data class GetProductResults(val products: List<Product> = emptyList())
